@@ -5,4 +5,7 @@
 *.log
 *~
 *.wav
+*.xml
 *.ly
+
+.DS_Store

@@ -276,3 +276,5 @@ BassLyrics = ##f
 %% Include base layout file
                                 % TODO: It annoys me that I'm misusing the 8-part template to make a 4-part template. Find a way to fix this, to enable >4-part arrangements.
 \include "ssaattbb.ly"
+\include "bhs-festival.ily"
+#(if RunFestival (bhs-festival))

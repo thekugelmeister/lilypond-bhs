@@ -68,10 +68,10 @@ skips =
   "From http://lilypond.1069038.n5.nabble.com/Add-lyrics-after-n-measures-td165881.html.
 Insert a given number of lyric skips, accounting appropriately for terminating lyric extenders."
   #{ 
-    \lyricmode {
-      ""
-      \repeat unfold $(- nskips 1) { \skip 1 }
-    }
+  \lyricmode {
+  ""
+  \repeat unfold $(- nskips 1) { \skip 1 }
+}
   #})
 
 %% adapted from http://lsr.di.unimi.it/LSR/Snippet?id=961
