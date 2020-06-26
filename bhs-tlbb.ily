@@ -11,10 +11,19 @@ BHSBarSandwich =
    #{{\bar "" #music \bar "|."}#}
    (make-music 'SequentialMusic 'void #t)))
 
-%% Generic Settings
+%% Generic Settings and Initialization
 \pointAndClickOff
-                                % TODO: This is a very useful debugging tool for note collision issues. Maybe this should be part of a larger debugging option.
-% #(ly:set-option 'debug-skylines)
+
+#(define other-settings
+  '("BHSDebug"
+    "TagPage"))
+#(define-missing-variables! other-settings)
+
+#(cond
+  (BHSDebug
+   (ly:set-option 'debug-skylines)
+   (ly:set-option 'debug-page-breaking-scoring)
+ ))
 
 %% BHS Settings
 %%% @Section A.1.a
@@ -41,8 +50,12 @@ TwoVoicesPerStaff = ##t
                                 % TODO: Time signature change spec is currently unimplemented
 
 \paper {
-                                % TODO: Re-enable tag page, etc.
-  page-breaking = #ly:optimal-breaking
+                                % TODO: This was a useful tool in previous versions, but it crashes horribly right now with some wrong type argument errors. Figure out what's going wrong and whether it's my fault. If so, fix it. If not, re-enable this later.
+                                % annotate-spacing = #BHSDebug
+  
+  page-breaking = #(if TagPage
+                    ly:one-page-breaking
+                    ly:optimal-breaking)
 
 %%% @Section A.2
   %% Use 1/2” to 5/8” margins at the top, bottom and sides of all pages. The ends of each music system, including the choral bracket, sit within and abut the side margins.
@@ -279,10 +292,6 @@ TenorMusic = ##f
 TenorLyrics = ##f
 BassMusic = ##f
 BassLyrics = ##f
-
-%% Add functionality
-                                % TODO: Add option variables for other options (tagpage, showtempomarking, festival, etc.) from previous version.
-
 
 
 %% Include base layout file
