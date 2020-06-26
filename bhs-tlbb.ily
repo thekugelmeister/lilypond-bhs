@@ -1,12 +1,15 @@
 \version "2.20"
+\include "base-tkit.ly"
 #(load "bhs-utils.scm")
 
 %% New Functions
                                 % TODO: Move this to bhs-utils.scm or some other file.
 BHSBarSandwich =
-#(define-music-function (music) (ly:music?)
+#(define-music-function (music) (scheme?)
   (_i "Sandwich the given music between a blank bar line and a closing bar line")
-  #{{\bar "" #music \bar "|."}#})
+  (if music
+   #{{\bar "" #music \bar "|."}#}
+   (make-music 'SequentialMusic 'void #t)))
 
 %% Generic Settings
 \pointAndClickOff
@@ -181,7 +184,7 @@ Layout = \layout {
     \override Glissando.style = #'trill
 
                                 % TODO Optionally display tempo marking based on user specification? This was in the original version, and could be added again. It's technically not in the spec.
-                                % tempoHideNote = #(not ShowTempoMarking)
+    tempoHideNote = ##t
 
                                 % TODO: Document these as part of the temporary solution for bar number placement, and discuss the weaknesses of the strategy
                                 % TODO: Does this have any unintended side-effects?
@@ -220,7 +223,7 @@ Layout = \layout {
     %% If the last measure of a system must be split to start a new section on the next system with a pickup note(s), take care not to assign a measure number to the pickup portion of the split measure.
                                 % TODO: Implement this spec; this might be the automatic functionality, but this needs verification.
 
-                                % TODO: Is this important?
+                                % TODO: I personally don't like it when it removes the empty staves, but I can see arguments for having it. Make a decision later.
                                 % \RemoveAllEmptyStaves
 %%% @Section B.8.c
     %% Use courtesy accidentals, which are given in parentheses, only if the first note of a given measure is a chromatic version of the last note in the preceding measure in the same part.
@@ -243,6 +246,15 @@ Layout = \layout {
 
 %% Convert from BHS to SATB
                                 % TODO: Ideally, there would be a larger and more extensible conversion process that would take all possible other variables into account, but I'm lazy...
+#(define tlbb-voice-prefixes
+  '("Tenor"
+    "Lead"
+    "Bari"
+    "Bass"))
+#(define-missing-variables! (cartesian
+                             tlbb-voice-prefixes
+                             '("Music" "Lyrics")))
+
 TenorOneMusic = \BHSBarSandwich \TenorMusic
 TenorOneLyrics = \TenorLyrics
 TenorOneInstrumentName = "Tenor"

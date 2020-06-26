@@ -130,5 +130,5 @@ bhs-festival =
                festival-output-name))))
     (cond
      ((not FestivalNoCleanup)
-      (display "\nCleaning up after Festival processing...")
+      (display "\nCleaning up after Festival processing...\n")
       (map festival-voicecleanup festival-voices))))))
