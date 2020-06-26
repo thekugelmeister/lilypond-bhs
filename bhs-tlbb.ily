@@ -123,7 +123,7 @@ TwoVoicesPerStaff = ##t
     }
 %%% @Section C.5
     %% NOTE: This section is ommitted from the current version of the spec; it is being assumed that this is accurate based on any other sources and observing the notated example in the spec.
-    %% Performance Notes
+                                % TODO: Right now, this always displays. That seems like overkill. Although the contest suitability line is still hilarious, so maybe I don't care.
     \on-the-fly #last-page
     \column {
       \override #'(thickness . 4)
