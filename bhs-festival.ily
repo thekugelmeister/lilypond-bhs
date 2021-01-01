@@ -1,9 +1,9 @@
 \version "2.20"
 \include "festival.ly"
 \include "vocal-tkit.ly"
+#(use-modules (score-spec))
 #(use-modules (ice-9 format))
 
-                                % TODO: Right now you have to run bhs-config.ily first to initialize everything. Maybe make it stand-alone? Is it worth it?
                                 % TODO: sox crashes when only one voice part provided.
                                 % TODO: Make FestivalHalfTempo work automatically, instead of requiring user to change tempo globally.
                                 % TODO: Should FestivalOctaveDown and FestivalHalfTempo be mutually exclusive options?
@@ -20,33 +20,23 @@ See "speech_tools/sigpr/pda/srpd.h" for more evidence (more hard-coded limits, a
 %}
 #(define festival-variable-names
   ;; User-defined options (boolean)
-  '("RunFestival"
-    "FestivalSyllabify"
+  '("FestivalSyllabify"
     "FestivalOctaveDown"
     "FestivalHalfTempo"
     "FestivalNoCleanup"))
 
 #(define-missing-variables! festival-variable-names)
 
-                                % TODO: This whole thing is super silly and not flexible. Change it ASAP.
-#(define bhs-voice-names '("Tenor" "Lead" "Bari" "Bass"))
-#(define festival-lyric-variables
-  (cartesian bhs-voice-names '("FestivalLyrics")))
-#(define-missing-variables! festival-lyric-variables)
-TenorOneLyrics = \TenorFestivalLyrics
-TenorTwoLyrics = \LeadFestivalLyrics
-BassOneLyrics = \BariFestivalLyrics
-BassTwoLyrics = \BassFestivalLyrics
 #(set-music-definitions!
-  ssaattbb-voice-prefixes
-  ssaattbb-lyrics-postfixes
-  ssaattbb-lyrics-variable-names)
-#(define staff-order '("TenorOne" "TenorTwo" "BassOne" "BassTwo"))
+  (staves-voice-prefixes staves)
+  '("FestivalLyrics")
+  '())
+
 #(define festival-voices (filter (lambda (vp)
                                   (and
                                    (make-id vp "Music")
-                                   (make-id vp "Lyrics")))
-                          staff-order))
+                                   (make-id vp "FestivalLyrics")))
+                          voice-prefixes))
 
 
 %% \festivalsylslow #"filename" { \tempo N = X } { music }
@@ -92,7 +82,7 @@ festival-voicecleanup =
                                 % TODO: The logic for which version of output is kind of flawed. Revisit this.
 #(define festival-allvoices-filespec "allvoices")
 #(define festival-output-name (ly:parser-output-name))
-bhs-festival =
+BHSFestival =
 #(define-void-function
   ()
   ()
