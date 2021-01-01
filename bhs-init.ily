@@ -121,6 +121,7 @@
 %%% @Section C.5
     %% NOTE: This section is ommitted from the current version of the spec; it is being assumed that this is accurate based on any other sources and observing the notated example in the spec.
                                 % TODO: Right now, this always displays. That seems like overkill. Although the contest suitability line is still hilarious, so maybe I don't care.
+                                % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
     \on-the-fly #last-page
     \column {
       \override #'(thickness . 4)
