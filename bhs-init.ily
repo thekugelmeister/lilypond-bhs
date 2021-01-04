@@ -171,8 +171,7 @@ Layout = \layout {
                         (ly:spanner-broken-into orig)
                         '())))
        (if (pair? siblings)
-        (let* ((props (ly:grob-properties grob))
-               (old-inst-name-markup (ly:grob-property grob 'long-text))
+        (let* ((old-inst-name-markup (ly:grob-property grob 'long-text))
                (inst-names (map (lambda (proc) (cadr proc)) (cadr old-inst-name-markup)))
                (inst-markups (map (lambda (name) (markup name)) inst-names))
                (m (markup #:abs-fontsize 10 (make-left-column-markup inst-markups))))
@@ -207,12 +206,15 @@ Layout = \layout {
     \consists Bar_number_engraver
 %%% @Section A.12.a
     %% Number every measure, starting with the first full measure. Place the measure number above the treble staff and immediately following the bar line, except for the first measure of each system, where the measure number is placed above the treble staff and immediately after the key signature.
+    %%% @Section A.12.c
+    %% Use 10-point regular fixed size Times New Roman type for all measure numbers.
     \override BarNumber.break-visibility = #end-of-line-invisible
                                 % TODO: This relies on the assumption that the top staff will always be index 0 or 1 in the vertical axis group, and the lower staves will always be of index > 2. Thus far, this assumption has held for all test cases. However, I am uncomfortable with this assumption. Consider robustly checking it, or finding a better way to do it.
+    %% NOTE: This also handles the requirement for setting the absolute font size
     \override BarNumber.stencil = #(grob-transformer 'stencil
                                     (lambda (grob default)
                                      (if (member (ly:grob-get-vertical-axis-group-index grob) '(0 1))
-                                      default
+                                      (grob-interpret-markup grob (markup (make-abs-fontsize-markup 10 (ly:grob-property grob 'text))))
                                       #f)))
     \override BarNumber.extra-spacing-width = #'(0 . 1)
     %% NOTE: For the following to work, it requires forcibly adding a blank bar in front of the music, so that LilyPond figures out there's a bar there in the first place. This is handled elsewhere in this template.
@@ -224,10 +226,6 @@ Layout = \layout {
 %%% @Section A.12.b
     %% For the first measure, or any measure with a key signature and/or meter signature, place the number of the measure above the treble staff immediately after the meter signature.
     \override TimeSignature.break-align-anchor-alignment = #RIGHT
-%%% @Section A.12.c
-    %% Use 10-point regular fixed size Times New Roman type for all measure numbers.
-                                % TODO: Implement this spec
-                                % \override BarNumber.font-size = \absFontSize #10
 %%% @Section A.12.d
     %% If the last measure of a system must be split to start a new section on the next system with a pickup note(s), take care not to assign a measure number to the pickup portion of the split measure.
                                 % TODO: Implement this spec; this might be the automatic functionality, but this needs verification.
