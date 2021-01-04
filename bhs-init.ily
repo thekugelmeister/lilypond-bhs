@@ -12,7 +12,8 @@
 
 #(define other-settings
   '("BHSDebug"
-    "TagPage"))
+    "TagPage"
+    "ShowTempo"))
 #(define-missing-variables! other-settings)
 
 #(cond
@@ -192,8 +193,8 @@ Layout = \layout {
     %% Glissando style
     \override Glissando.style = #'trill
 
-                                % TODO Optionally display tempo marking based on user specification? This was in the original version, and could be added again. It's technically not in the spec.
-    tempoHideNote = ##t
+                                %% Optionally display tempo marking; spec calls for no tempo marking, so default is to hide it.
+    tempoHideNote = #(not ShowTempo)
 
                                 % Change context to staff: http://lilypond.1069038.n5.nabble.com/Consistent-bar-number-positioning-td26017.html
     \remove Bar_number_engraver
