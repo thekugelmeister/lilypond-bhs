@@ -18,6 +18,12 @@ You should have received a copy of the GNU General Public License
 along with LilyPond Barbershop Template.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
+contestSuitability = \markup {
+  \wordwrap {
+    As a final note: Questions about the contest suitability of this song/arrangement should be directed to the judging community and measured against current contest rules. Ask \italic before you sing.
+  }
+}
+
 %% voiceCross: Add a voice crossing mark to a note ('x' placed above it).
 voiceCross=#(define-event-function () ()
              #{

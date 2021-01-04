@@ -103,3 +103,23 @@ NOTE: Some of these cases are not explicitly covered in the manual, so I made ed
                                                  \fill-line { \null #(string-append "Arrangement by " arranger) }
                                                  }
                                         #})))))
+
+(define-markup-command (generate-perf-notes layout props)
+  ()
+  (let ((perf-notes (chain-assoc-get 'header:performancenotes props)))
+    (if (or (markup? perf-notes) (markup-list? perf-notes))
+        (interpret-markup layout props
+                          #{\markup
+                            \column {
+                                     \override #'(thickness . 4)
+                                     \draw-hline
+                                     \vspace #0.5
+                                     \bold \italic \abs-fontsize #18 "Performance Notes"
+                                     \vspace #0.5
+                                     \abs-fontsize #10 {
+                                                        \override #'(align-dir . -1)
+                                                        \fromproperties #'header:performancenotes
+                                                        }
+                                     }
+                            #})
+        empty-stencil)))

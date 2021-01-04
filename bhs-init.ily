@@ -72,6 +72,7 @@
   max-systems-per-page = 5
   markup-system-spacing.stretchability = #60
   top-markup-spacing.stretchability = #60
+  system-system-spacing.padding = #5
 
   #(define fonts
     (set-global-fonts
@@ -120,23 +121,20 @@
     }
 %%% @Section C.5
     %% NOTE: This section is ommitted from the current version of the spec; it is being assumed that this is accurate based on any other sources and observing the notated example in the spec.
-                                % TODO: Right now, this always displays. That seems like overkill. Although the contest suitability line is still hilarious, so maybe I don't care.
                                 % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
     \on-the-fly #last-page
-    \column {
-      \override #'(thickness . 4)
-      \draw-hline
-      \vspace #0.5
-      \bold \italic \abs-fontsize #18 "Performance Notes"
-      \vspace #0.5
-      \abs-fontsize #10 {
-        \override #'(align-dir . -1)
-        \fromproperties  #'header:performancenotes
-      }
-      \abs-fontsize #10 \wordwrap {
-        As a final note: Questions about the contest suitability of this song/arrangement should be directed to the judging community and measured against current contest rules. Ask \italic before you sing.
-      }
-    }
+    \generate-perf-notes
+    % \column {
+    %   \override #'(thickness . 4)
+    %   \draw-hline
+    %   \vspace #0.5
+    %   \bold \italic \abs-fontsize #18 "Performance Notes"
+    %   \vspace #0.5
+    %   \abs-fontsize #10 {
+    %     \override #'(align-dir . -1)
+    %     \fromproperties #'header:performancenotes
+    %   }
+    % }
   }
 
 %%% @Section A.3
@@ -166,18 +164,25 @@ Layout = \layout {
     %% Indent the first music system so that the names of the four parts (Tenor, Lead, Bari, and Bass), with only the first letter capitalized, can be printed immediately to the left of the system. Left justify the part names flush with the left margin, and in Times New Roman type 10-point fixed size.
     %% NOTE: The following doesn't work, because the staff-tkit hard-codes the instrument name to be in a right-aligned column. Kept here for documentation.
     %% \override InstrumentName.self-alignment-X = #LEFT
-    %% NOTE: This is silly, but it works. The staff-tkit hard-codes a lot of things, so I had to overwrite them. Could be avoided by replacing the staff-tkit, but I set out to make use of the pre-built lilypond funcitonality, and I am sticking to my guns. This function extracts the instrument names from the hard-coded markups, then re-packages them with the desired formatting.
-    \override InstrumentName.stencil = #(grob-transformer 'stencil
-                                         (lambda (grob default)
-                                          (if (ly:stencil-empty? default)
-                                           default
-                                           (let* ((layout (ly:grob-layout grob))
-                                                  (props (ly:grob-alist-chain grob (ly:output-def-lookup layout 'text-font-defaults)))
-                                                  (old-inst-name-markup (ly:grob-property grob 'long-text))
-                                                  (inst-names (map (lambda (proc) (cadr proc)) (cadr old-inst-name-markup)))
-                                                  (inst-markups (map (lambda (name) (markup name)) inst-names))
-                                                  (m (markup #:abs-fontsize 10 (make-left-column-markup inst-markups))))
-                                            (interpret-markup layout props m)))))
+    %% NOTE: This is silly, but it works. The staff-tkit hard-codes a lot of things, so I had to overwrite them. Could be avoided by replacing the staff-tkit, but I set out to make use of the pre-built lilypond funcitonality, and I am sticking to my guns. This function extracts the instrument names from the hard-coded markups, then re-packages them with the desired formatting. It also overwrites the short instrument names to force them to be empty.
+    %% Based on http://lsr.di.unimi.it/LSR/Item?id=1046
+    \override InstrumentName.after-line-breaking = 
+    #(lambda (grob)
+      (let* ((orig (ly:grob-original grob))
+             (siblings (if (ly:grob? orig)
+                        (ly:spanner-broken-into orig)
+                        '())))
+       (if (pair? siblings)
+        (let* ((props (ly:grob-properties grob))
+               (old-inst-name-markup (ly:grob-property grob 'long-text))
+               (inst-names (map (lambda (proc) (cadr proc)) (cadr old-inst-name-markup)))
+               (inst-markups (map (lambda (name) (markup name)) inst-names))
+               (m (markup #:abs-fontsize 10 (make-left-column-markup inst-markups))))
+         (ly:grob-set-property! (car siblings) 'long-text m)
+         (for-each
+          (lambda (g)
+           (ly:grob-set-property! g 'text ""))
+          (cdr siblings))))))
     
 %%% @Section A.11.a
     %% Place names of sections (such as Intro, Verse, Chorus, Reprise, Interlude, or Tag) in 12-point fixed size Times New Roman Bold type, with the first letter aligned with the first note of the section. Capitalize only the first letter of the word.
@@ -194,6 +199,7 @@ Layout = \layout {
     tempoHideNote = ##t
 
                                 % TODO: Document these as part of the temporary solution for bar number placement, and discuss the weaknesses of the strategy
+                                % TODO: Bar numbers can appear above or below top-line markups. This is not the desired functionality.
                                 % TODO: Does this have any unintended side-effects?
                                 % Change context to staff: http://lilypond.1069038.n5.nabble.com/Consistent-bar-number-positioning-td26017.html
                                 % Add an identifier to all grobs for conditional display: http://lilypond.1069038.n5.nabble.com/How-to-get-Staff-context-id-from-a-grob-td152107.html
@@ -202,6 +208,9 @@ Layout = \layout {
                 (acknowledgers
                  ((grob-interface engraver grob source-engraver)
                   (ly:grob-set-property! grob 'id (ly:context-id (ly:translator-context source-engraver))))))
+
+    %% Limit how close together notes can be, for readibility
+    \override SpacingSpanner.base-shortest-duration = #(ly:make-moment 1/16)
   }
   \context {
     \Staff
@@ -216,7 +225,7 @@ Layout = \layout {
                                       default
                                       #f)))
     \override BarNumber.extra-spacing-width = #'(0 . 1)
-    %% NOTE: For the following to work, it requires forcibly adding a blank bar in front of the music, so that LilyPond figures out there's a bar there in the first place. This is handled elsewhere in this config script.
+    %% NOTE: For the following to work, it requires forcibly adding a blank bar in front of the music, so that LilyPond figures out there's a bar there in the first place. This is handled elsewhere in this template.s
     barNumberVisibility = #first-bar-number-visible-and-no-parenthesized-bar-numbers
     \override BarNumber.self-alignment-X = #LEFT
     \override BarNumber.break-align-symbols = #'(time-signature key-signature)
