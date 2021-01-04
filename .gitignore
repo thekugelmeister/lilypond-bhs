@@ -9,3 +9,6 @@
 *.ly
 
 .DS_Store
+
+# Force inclusion of example files
+!example*
