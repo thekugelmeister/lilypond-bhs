@@ -24,10 +24,7 @@
 %% BHS Settings
 %%% @Section A.1.a
 %% For men’s voices, each music system consists of two staves, one for treble clef with an 8 beneath it (to be read an octave lower than written, for the lead and tenor parts) and one for bass clef (baritone and bass parts). For women’s voices, each music system consists of two staves, one for treble clef (for the lead and tenor parts) and one for bass clef with an 8 above it (to be read an octave higher than written, for the baritone and bass parts). Indicate each music system by using a choral bracket to connect the two staves.
-                                % TODO: This only handles the two voices per staff part of the spec. Nothing else here needs changes to settings, until the time comes to handle women's barbershop notation.
-                                % TODO: Should this actually be hard-coded like this? Maybe not...
-                                % TODO: This should now be rendered useless; maybe put this documentation in the relevant template files?
-                                % TwoVoicesPerStaff = ##t
+                                % TODO: Maybe put this documentation in the relevant score-spec files?
 
 %%% @Section A.10
                                 % TODO: Medley spec is currently unimplemented.
@@ -198,16 +195,8 @@ Layout = \layout {
                                 % TODO Optionally display tempo marking based on user specification? This was in the original version, and could be added again. It's technically not in the spec.
     tempoHideNote = ##t
 
-                                % TODO: Document these as part of the temporary solution for bar number placement, and discuss the weaknesses of the strategy
-                                % TODO: Bar numbers can appear above or below top-line markups. This is not the desired functionality.
-                                % TODO: Does this have any unintended side-effects?
                                 % Change context to staff: http://lilypond.1069038.n5.nabble.com/Consistent-bar-number-positioning-td26017.html
-                                % Add an identifier to all grobs for conditional display: http://lilypond.1069038.n5.nabble.com/How-to-get-Staff-context-id-from-a-grob-td152107.html
     \remove Bar_number_engraver
-    \consists #(make-engraver
-                (acknowledgers
-                 ((grob-interface engraver grob source-engraver)
-                  (ly:grob-set-property! grob 'id (ly:context-id (ly:translator-context source-engraver))))))
 
     %% Limit how close together notes can be, for readibility
     \override SpacingSpanner.base-shortest-duration = #(ly:make-moment 1/16)
@@ -225,10 +214,12 @@ Layout = \layout {
                                       default
                                       #f)))
     \override BarNumber.extra-spacing-width = #'(0 . 1)
-    %% NOTE: For the following to work, it requires forcibly adding a blank bar in front of the music, so that LilyPond figures out there's a bar there in the first place. This is handled elsewhere in this template.s
+    %% NOTE: For the following to work, it requires forcibly adding a blank bar in front of the music, so that LilyPond figures out there's a bar there in the first place. This is handled elsewhere in this template.
     barNumberVisibility = #first-bar-number-visible-and-no-parenthesized-bar-numbers
     \override BarNumber.self-alignment-X = #LEFT
     \override BarNumber.break-align-symbols = #'(time-signature key-signature)
+    \override BarNumber.avoid-slur = #'inside
+    \override BarNumber.outside-staff-priority = ##f
 %%% @Section A.12.b
     %% For the first measure, or any measure with a key signature and/or meter signature, place the number of the measure above the treble staff immediately after the meter signature.
     \override TimeSignature.break-align-anchor-alignment = #RIGHT
