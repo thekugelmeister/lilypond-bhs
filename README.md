@@ -13,24 +13,51 @@ This repository represents a set of utilities for notating, engraving, and worki
 |---------------|---------|
 | [LilyPond][3] | 2.20+   |
 
-<!-- TODO: Add optional requirements (festival) -->
+## Optional Requirements
+| Software | Version | Purpose                                                                   |
+|----------|---------|---------------------------------------------------------------------------|
+| [Festival][5] |         | Enable automatic generation of tracks using basic singing voice synthesis |
 
 ## Usage
-### Engraving Template: `bhs-tlbb.ily`
-The core funcitonality of this package is based off of the built-in LilyPond choral templates, `satb.ly` and `ssaattbb.ly`. These templates are designed to be included at the end of an input `.ly` file, and automatically format any music that fits their specification. This drastically simplifies the process of laying out multi-part choral music. `bhs-tlbb.ily` is simply a wrapper around these built-in templates.
+The core funcitonality of this package is based off of the built-in LilyPond choral templates, as used in `satb.ly` and `ssaattbb.ly`. These templates are designed to be included at the end of an input `.ly` file, and automatically format any music that fits their specification. This drastically simplifies the process of laying out multi-part choral music. See the documentation for the [satb template][4] for more details.
 
-To use it, simply follow the specification for the template and include the following line at the bottom of the file:
+<!-- TODO: Expand on the options this brings to the table; especially Key and Time -->
+
+### Basic Usage
+
+As with the LilyPond choral templates, music and lyrics for each part are specified as variables. For a voice named `VoiceOne`, music should be assigned to the variable `VoiceOneMusic`, and lyrics should be assigned to the variable `VoiceOneLyrics`. The available voices and their names are typically pre-defined as part of the score spec. The score spec also handles grouping the voices into staves.
+
+To format a score for a TTBB ensemble (Tenor, Lead, Baritone, Bass), include the following lines at the bottom of the file:
 ```LilyPond
-\include "bhs-tlbb.ily"
+\include "bhs-init.ily"
+\include "score-specs/bhs-ttbb.ily"
+\include "lilypond-bhs.ily"
 ```
 
-To understand the available layout variables and options, view the documentation for the built-in [satb template][4]. All of the variables and options from that template are available for use with `bhs-tlbb.ily`, with the following exceptions:
-* Part names are changed to match the Tenor, Lead, Bari, Bass configuration
-  * For now, this only affects the Music and Lyrics variables; others remain unaffected.
-* The following variable sets will be automatically overwritten to conform to the specification:
-  * InstrumentName
-  * ShortInstrumentName
-  * TwoVoicesPerStaff
+To change to another ensemble type, such as SSAA (Tenor, Lead, Baritone, Bass), simply swap out the score spec:
+```LilyPond
+\include "score-specs/bhs-ssaa.ily"
+```
+
+<!-- TODO: Document score specification -->
+
+### BHS Markup: `bhs-markup.ily`
+Additional functionality for marking up your score in BHS-specific ways can be found in `bhs-markup.ily`. Include this file at the top of your file.
+<!-- TODO: Document available functions -->
+
+### Festival Synthesis
+If Festival is installed on your system, you can automatically generate synthetic singing tracks when compiling your file. The existing music definitions are used as-is to define the notes sung by the synthesizer. For a voice named `VoiceOne`, the lyric definitions for Festival output should be assigned to the variable `VoiceOneFestivalLyrics`. These lyrics will not affect the layout of the score. This allows for the inclusion of Festival lyrics where there are `skip`s in the lyrics for layout purposes.
+
+To generate the tracks, include the following at the bottom of your file:
+```LilyPond
+\include "bhs-festival.ily"
+\BHSFestival
+```
+
+## Examples
+See `example_tag.ly` for a full example of the use of this package.
+<!-- TODO: embed picture? -->
+<!-- TODO: If I embed a picture, I should probably move this earlier... -->
 
 ## Project History
 <!-- TODO: Fill this in to acknowledge reference inspirations and previous work -->
@@ -40,4 +67,4 @@ To understand the available layout variables and options, view the documentation
 [2]: http://www.barbershop.org/files/documents/getandmakemusic/Barbershop%20Notation%20Manual.pdf
 [3]: http://lilypond.org
 [4]: https://lilypond.org/doc/v2.20/Documentation/learning/satb-template
-<!-- [4]: http://festvox.org/festival/ -->
+[5]: http://festvox.org/festival/
