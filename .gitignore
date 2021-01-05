@@ -4,7 +4,6 @@
 *.mid
 *.log
 *~
-*.wav
 *.xml
 *.ly
 
@@ -12,3 +11,6 @@
 
 # Force inclusion of example files
 !example*
+
+# List .wav later, to prevent example .wav files from being added
+*.wav
