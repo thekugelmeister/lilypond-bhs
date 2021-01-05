@@ -46,7 +46,7 @@
 
 \paper {
                                 % TODO: This was a useful tool in previous versions, but it crashes horribly right now with some wrong type argument errors. Figure out what's going wrong and whether it's my fault. If so, fix it. If not, re-enable this later.
-                                % annotate-spacing = #BHSDebug
+  % annotate-spacing = #BHSDebug
   
   page-breaking = #(if TagPage
                     ly:one-page-breaking
@@ -230,8 +230,6 @@ Layout = \layout {
     %% If the last measure of a system must be split to start a new section on the next system with a pickup note(s), take care not to assign a measure number to the pickup portion of the split measure.
                                 % TODO: Implement this spec; this might be the automatic functionality, but this needs verification.
 
-                                % TODO: I personally don't like it when it removes the empty staves, but I can see arguments for having it. Make a decision later.
-                                % \RemoveAllEmptyStaves
 %%% @Section B.8.c
     %% Use courtesy accidentals, which are given in parentheses, only if the first note of a given measure is a chromatic version of the last note in the preceding measure in the same part.
                                 % TODO: modern-voice-cautionary is close, but includes extra marks (which are cautionary, at least) for chromatic versions of previous notes that are further than one note away. IMO, this is actually better, but it's not what the spec says. I'm leaving it for now.
