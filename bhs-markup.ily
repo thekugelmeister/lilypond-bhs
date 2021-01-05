@@ -24,7 +24,11 @@ contestSuitability = \markup {
   }
 }
 
-%% voiceCross: Add a voice crossing mark to a note ('x' placed above it).
+                                % TODO: Write wrappers for the swing articulation that only affects midi output (even better: also affects festival output).
+
+%%% @Section B.14.a
+%% If the lower voice on a staff crosses over the top voice on the same staff, place a lower-case x in 10-point fixed size Arial type, above the staff where the first note of the chord occurs.
+%% voiceCross: Add a voice crossing mark to a note.
 voiceCross=#(define-event-function () ()
              #{
              ^\markup { \abs-fontsize #10 { \override #'(font-name . "Arial") x } }
@@ -32,6 +36,7 @@ voiceCross=#(define-event-function () ()
            )
 
 %% voiceCrosses: Mark the given set notes as crossed.
+                                % TODO: Does this even work right now? If it does, start using it! If it doesn't, either fix it or remove it.
 voiceCrosses =
 #(define-music-function
   (parser location music)
@@ -41,6 +46,7 @@ voiceCrosses =
 
 
 %% newSection: Demarcate new section with a double bar line and a label
+                                % TODO: Document manual reference and missing functionality.
 newSection =
 #(define-music-function
   (parser location text)
@@ -52,6 +58,8 @@ newSection =
 
 %% http://lsr.di.unimi.it/LSR/Item?id=538
 %% optionalNotes: Given a chord, makes the first note normal size and the remaining notes a smaller size.
+                                % TODO: Document manual reference.
+                                % TODO: Refactor; not sure if this works, or how it was supposed to work in the first place...
 optionalNotes =
 #(define-music-function (parser location x) (ly:music?)
   (music-map (lambda (x)
@@ -104,3 +112,16 @@ Insert a given number of lyric skips, accounting appropriately for terminating l
    \draw-dashed-line #(cons 0 length)
  }
    #}))
+
+
+%%% @Section B.13.a:
+%% A caesura marks a break in the sound. The two slanted lines should go through the top space of the staff and rest on the fourth line.
+caesura =
+#(define-music-function
+  (parser location)
+  ()
+  #{
+  \once \override BreathingSign.text = \markup { \musicglyph #"scripts.caesura.straight" }
+  \breathe
+  #}
+)

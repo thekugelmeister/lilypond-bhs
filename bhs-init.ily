@@ -7,6 +7,27 @@
 #(set! %load-path (cons (getcwd) %load-path))
 
 
+%%% @Section B.8.a
+%% An accidental affects only one voice part for one measure, unless the pitch is tied over the bar line, in which case the accidental is in force only for the duration of the tied note. If the tied pitch is repeated in the new measure, then another accidental is required. Accidentals include the flat, sharp, natural, double flat and double sharp. To cancel a double sharp in a measure, simply use a single sharp. Likewise, to cancel a double flat, use a single flat.
+%%% @Section B.8.c (the first one; not the second one...)
+%% Use courtesy accidentals, which are given in parentheses, only if the first note of a given measure is a chromatic version of the last note in the preceding measure in the same part.
+                                % TODO: Technically, this implementation is incorrect, but I like it better in most cases.
+%% Defines a new accidental style called "bhs-voice-cautionary", which is based on the built-in "voice" and "modern-cautionary" accidental styles:
+%% - Sets extraNatural to #f
+%% - All rules apply to the Voice context, rather than the Staff context
+%% - Accidentals are remembered to the end of the measure in which they occur and only in their own octave
+%% - After temporary accidentals, cautionary cancellation marks are printed also in the following measure (for notes in the same octave) and, in the same measure, for notes in other octaves.
+#(set! accidental-styles (append accidental-styles
+                          `(
+                            (bhs-voice-cautionary
+                             #f
+                             (Voice
+                              ,(make-accidental-rule 'same-octave 0))
+                             (Voice
+                              ,(make-accidental-rule 'any-octave 0)
+                              ,(make-accidental-rule 'same-octave 1))))))
+
+
 %% Generic Settings and Initialization
 \pointAndClickOff
 
@@ -96,6 +117,7 @@
       \fill-line { \abs-fontsize #10 { \italic \fromproperty #'header:addinfo } }
 %%% @Section A.6-8
       %% See documentation for lyricist-composer-arranger in utilities.
+                                % TODO: When there are multiple people, apparently the "and" between names should not be capitalized.
       \abs-fontsize #12 {
         \strut
         \lyricist-composer-arranger
@@ -220,7 +242,7 @@ Layout = \layout {
     %% NOTE: For the following to work, it requires forcibly adding a blank bar in front of the music, so that LilyPond figures out there's a bar there in the first place. This is handled elsewhere in this template.
     barNumberVisibility = #first-bar-number-visible-and-no-parenthesized-bar-numbers
     \override BarNumber.self-alignment-X = #LEFT
-    \override BarNumber.break-align-symbols = #'(time-signature key-signature)
+    \override BarNumber.break-align-symbols = #'(time-signature key-signature staff-bar)
     \override BarNumber.avoid-slur = #'inside
     \override BarNumber.outside-staff-priority = ##f
 %%% @Section A.12.b
@@ -230,10 +252,7 @@ Layout = \layout {
     %% If the last measure of a system must be split to start a new section on the next system with a pickup note(s), take care not to assign a measure number to the pickup portion of the split measure.
                                 % TODO: Implement this spec; this might be the automatic functionality, but this needs verification.
 
-%%% @Section B.8.c
-    %% Use courtesy accidentals, which are given in parentheses, only if the first note of a given measure is a chromatic version of the last note in the preceding measure in the same part.
-                                % TODO: modern-voice-cautionary is close, but includes extra marks (which are cautionary, at least) for chromatic versions of previous notes that are further than one note away. IMO, this is actually better, but it's not what the spec says. I'm leaving it for now.
-    \accidentalStyle modern-voice-cautionary
+    \accidentalStyle bhs-voice-cautionary
 
 %%% @Section A.1.d (continued)
     %% NOTE: See previous explanation; this is part of the vertical spacing stretchability portion of the current solution.
