@@ -144,17 +144,6 @@
                                 % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
     \on-the-fly #last-page
     \generate-perf-notes
-    % \column {
-    %   \override #'(thickness . 4)
-    %   \draw-hline
-    %   \vspace #0.5
-    %   \bold \italic \abs-fontsize #18 "Performance Notes"
-    %   \vspace #0.5
-    %   \abs-fontsize #10 {
-    %     \override #'(align-dir . -1)
-    %     \fromproperties #'header:performancenotes
-    %   }
-    % }
   }
 
 %%% @Section A.3
