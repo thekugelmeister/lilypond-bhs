@@ -95,6 +95,7 @@ Insert a given number of lyric skips, accounting appropriately for terminating l
    #}
  ))
 
+                                % TODO: I need a better solution for this. First of all, the fact that it's completely manual makes it difficult to use. It should somehow be able to determine placement automatically. Second, these take up no actualy space, as far as I can tell? So they get kind of clobbered by other grobs.
 %% adapted from http://lsr.di.unimi.it/LSR/Snippet?id=961
 %% melodyTransfer: Indicate a melody transfer between voices.
 %% Usage: -\markup { \melodyTransfer #angle #length #xoffset yoffset }

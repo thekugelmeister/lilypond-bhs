@@ -2,6 +2,11 @@
 \include "base-tkit.ly"
 #(load "bhs-utils.scm")
 
+                                % TODO: I need to find somewhere to document these
+                                % The following are useful functions for tweaking in scheme
+                                % (grob::display-objects grob)
+                                % (grob::all-objects grob)
+
                                 % TODO: This is probably not worth it, and I should instead be using (load) to import modules, etc.
 %% Force lilypond guile to include this directory in its load path
 #(set! %load-path (cons (getcwd) %load-path))
