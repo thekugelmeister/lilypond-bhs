@@ -127,3 +127,10 @@ caesura =
   \breathe
   #}
 )
+
+
+clapping =
+#(define-music-function
+  (parser location music)
+  (ly:music?)
+  #{ \override NoteHead.style = #'cross $music \revert NoteHead.style #})
