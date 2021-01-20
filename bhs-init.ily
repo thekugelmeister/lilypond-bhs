@@ -96,7 +96,7 @@
   max-systems-per-page = 5
   markup-system-spacing.stretchability = #60
   top-markup-spacing.stretchability = #60
-  system-system-spacing.padding = #5
+  system-system-spacing.padding = #1
 
   #(define fonts
     (set-global-fonts
