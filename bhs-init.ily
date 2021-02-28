@@ -86,17 +86,19 @@
   inner-margin = 0.50\in
   outer-margin= 0.625\in % 5/8 inch
   line-width = 7.375\in % 8.5 inch page width - ( inner-margin + outer-margin )
-  last-bottom-spacing = 0.50\in
   ragged-last-bottom = ##t
 
 %%% @Section A.1.d
   %% The standard format is three or four systems on the first page, and four or five systems on the other pages.  Use good judgment.  Avoid crowding too many systems on a page.  On the first page, save room above the first system for song title, writers and arrangers.
-  %% NOTE: This still seems to be pretty much impossible in LilyPond. The current setting is kind of "good enough". It combines max-systems-per-page with flexible vertical spacing stretchability to make things look good, while hoping that we never hit a scenario where too few systems end up on a page.
+                                % TODO: This does not do a great job. Fix it.
+  %% NOTE: This still seems to be pretty much impossible in LilyPond. The current setting is kind of "good enough". It combines max-systems-per-page with flexible vertical spacing settings to make things look good, while hoping that we never hit a scenario where too few systems end up on a page.
                                 % min-systems-per-page = 4
   max-systems-per-page = 5
-  markup-system-spacing.stretchability = #60
-  top-markup-spacing.stretchability = #60
-  system-system-spacing.padding = #1
+  system-system-spacing.padding = #4 % ensure there is a little space between systems
+  top-system-spacing.padding = #3 % ensure there is a little space between the page header and the top system on each page
+  top-markup-spacing.padding = #4 % ensure there is a nice amount of space above the title markup
+  markup-system-spacing.padding = #4 % ensure there is a nice amount of space below the title markup
+  % page-breaking-system-system-spacing.basic-distance = #5 % trick the page breaker into thinking there needs to be a sufficiently large gap between systems, such that the first page will not have 5 systems on it
 
   #(define fonts
     (set-global-fonts
@@ -249,15 +251,17 @@ Layout = \layout {
     \accidentalStyle bhs-voice-cautionary
 
 %%% @Section A.1.d (continued)
-    %% NOTE: See previous explanation; this is part of the vertical spacing stretchability portion of the current solution.
-    \override VerticalAxisGroup.staff-staff-spacing.stretchability = #120
+    %% If there is a lot of blank space on a page, let there be some more space between grouped staves in a system, rather than just having more space between systems. This makes things look more comfortable, in most cases
+    %% NOTE: This also helps cover up some imperfections in the current solution for sytems-per-page.
+    \override VerticalAxisGroup.staff-staff-spacing.stretchability = #60
   }
   \context {
     \Lyrics
 %%% @Section C.4
     %% Lyrics centered between staves when only one lyric line is present.
     %% NOTE: This section is ommitted from the current version of the spec; it is being assumed that this is accurate based on any other sources and observing the notated example in the spec.
-    \override VerticalAxisGroup.nonstaff-relatedstaff-spacing.stretchability = #10
-    \override VerticalAxisGroup.nonstaff-unrelatedstaff-spacing.stretchability = #30
+                                % TODO: This does not really do what it needs to. Fix it.
+    % \override VerticalAxisGroup.nonstaff-relatedstaff-spacing.stretchability = #10
+    % \override VerticalAxisGroup.nonstaff-unrelatedstaff-spacing.stretchability = #30
   }
 }
