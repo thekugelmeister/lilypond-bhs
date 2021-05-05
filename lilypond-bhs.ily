@@ -41,6 +41,9 @@ TestStaff = << \new ChoirStaff << #(make-simultaneous-music (map generate-staff-
 
 \score {
   \keepWithTag #'print
+  % #(if have-music
+  %      #{ << \Chords \TestStaff >> #}
+  %      #{ { } #} )
   #(if have-music
        #{ << \TestStaff >> #}
        #{ { } #} )
@@ -51,6 +54,9 @@ TestStaff = << \new ChoirStaff << #(make-simultaneous-music (map generate-staff-
 %% To avoid note collisions for multiple voices voices on one staff, assign the midi performer to the Voice context.
 \score {
   \keepWithTag #'play
+  % #(if have-music
+  %      #{ << \Chords \TestStaff >> #}
+  %      #{ { } #} )
   #(if have-music
        #{ << \TestStaff >> #}
        #{ { } #} )
@@ -63,5 +69,9 @@ TestStaff = << \new ChoirStaff << #(make-simultaneous-music (map generate-staff-
       \Voice
       \consists "Staff_performer"
     }
+    % \context {
+    %   \ChordNames
+    %   midiInstrument = #"voice oohs"
+    % }
   }
 }
