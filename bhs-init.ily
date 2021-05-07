@@ -12,9 +12,9 @@
 #(set! %load-path (cons (getcwd) %load-path))
 
 
-%%% @Section B.8.a
+%%% @Section B.9.a
 %% An accidental affects only one voice part for one measure, unless the pitch is tied over the bar line, in which case the accidental is in force only for the duration of the tied note. If the tied pitch is repeated in the new measure, then another accidental is required. Accidentals include the flat, sharp, natural, double flat and double sharp. To cancel a double sharp in a measure, simply use a single sharp. Likewise, to cancel a double flat, use a single flat.
-%%% @Section B.8.c (the first one; not the second one...)
+%%% @Section B.9.c
 %% Use courtesy accidentals, which are given in parentheses, only if the first note of a given measure is a chromatic version of the last note in the preceding measure in the same part.
                                 % TODO: Technically, this implementation is incorrect, but I like it better in most cases.
 %% Defines a new accidental style called "bhs-voice-cautionary", which is based on the built-in "voice" and "modern-cautionary" accidental styles:
@@ -114,7 +114,6 @@
       \fill-line { \abs-fontsize #22 { \sans \bold \fromproperty-apply #'header:title #(lambda (x) (string-upcase x))} }
 %%% @Section A.4.b
       %% If the song title includes a parenthetical phrase or word, center the parenthetical expression and use capital letters, 12-point fixed size ARIAL BOLD type.
-                                % TODO: It's not clear to me whether I am interpreting this part of the spec correctly. The examples they give appear to me to be formatted incorrectly, so it's hard to tell.
       \fill-line { \abs-fontsize #12 { \sans \bold \fromproperty-apply #'header:subtitle #(lambda (x) (string-append "(" (string-upcase x) ")"))} }
 %%% @Section A.5
       %% If the song is in public domain, center the year it was written in parentheses directly below the title, in 12-point fixed size Arial Bold.
@@ -146,8 +145,10 @@
         \fill-line { \override #'(align-dir . 0) \override #'(paragraph-spaces . 0) \fromproperties #'header:copyright }
       }
     }
-%%% @Section C.5
-    %% NOTE: This section is ommitted from the current version of the spec; it is being assumed that this is accurate based on any other sources and observing the notated example in the spec.
+%%% @Section C.5.a
+    %% Place Performance Notes after the music in 18-point fixed size Times New Roman bold italic type, with a solid horizontal line separating the last music system from the Performance Notes in Arial 18-point fixed size bold.
+%%% @Section C.5.b
+    %% Performance notes indicate possible performance options for the music, are in 10-point regular fixed size Times New Roman type, and may include historical information about the song and its author and composer, the arranger, and any artist who popularized the song.
                                 % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
     \on-the-fly #last-page
     \generate-perf-notes
@@ -205,8 +206,8 @@ Layout = \layout {
                                 % TODO: Right now this is technically incorrect, as it always aligns to the double bar line, not the first note of the section. Fix this if it is possible to do so in an easy-to-use way.
     \override RehearsalMark.self-alignment-X = #LEFT
 
-%%% @Section B.17
-    %% NOTE: This section was left out of the current released version of the spec; it is being assumed that this is accurate based on any other sources and observing the notated example in the spec.
+%%% @Section B.18
+    %% Indicate a vocal glissando, which is a continuous slide in pitch from one note to another, by placing a wavy line from one note head to the next note head.
     %% Glissando style
     \override Glissando.style = #'trill
 
@@ -244,7 +245,7 @@ Layout = \layout {
 %%% @Section A.12.b
     %% For the first measure, or any measure with a key signature and/or meter signature, place the number of the measure above the treble staff immediately after the meter signature.
     \override TimeSignature.break-align-anchor-alignment = #RIGHT
-%%% @Section A.12.d
+%%% @Section A.12.d (from old version of the spec)
     %% If the last measure of a system must be split to start a new section on the next system with a pickup note(s), take care not to assign a measure number to the pickup portion of the split measure.
                                 % TODO: Implement this spec; this might be the automatic functionality, but this needs verification.
 
@@ -258,8 +259,7 @@ Layout = \layout {
   \context {
     \Lyrics
 %%% @Section C.4
-    %% Lyrics centered between staves when only one lyric line is present.
-    %% NOTE: This section is ommitted from the current version of the spec; it is being assumed that this is accurate based on any other sources and observing the notated example in the spec.
+    %% Lyrics are set in 11-point regular fixed size Times New Roman type in the middle of the two staves and wherever a harmony part sings different words or the same words at different times. If the baritone and bass parts have the same set of words but different from the lead, and are singing the same rhythmic notation, simply place the words above the baritone part. If the tenor, baritone, and bass all have the same words, then place the words above the baritone and the tenor lines. If the lead and baritone are the same, but the tenor and bass are different, place words in the middle of the two staves for the lead and baritone, and above the tenor part and below the bass part. If the words are different for each part, however, then each part should be given its own set of words.
                                 % TODO: This does not really do what it needs to. Fix it.
     % \override VerticalAxisGroup.nonstaff-relatedstaff-spacing.stretchability = #10
     % \override VerticalAxisGroup.nonstaff-unrelatedstaff-spacing.stretchability = #30
