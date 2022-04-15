@@ -16,12 +16,21 @@
 %% An accidental affects only one voice part for one measure, unless the pitch is tied over the bar line, in which case the accidental is in force only for the duration of the tied note. If the tied pitch is repeated in the new measure, then another accidental is required. Accidentals include the flat, sharp, natural, double flat and double sharp. To cancel a double sharp in a measure, simply use a single sharp. Likewise, to cancel a double flat, use a single flat.
 %%% @Section B.9.c
 %% Use courtesy accidentals, which are given in parentheses, only if the first note of a given measure is a chromatic version of the last note in the preceding measure in the same part.
-                                % TODO: Technically, this implementation is incorrect, but I like it better in most cases.
-%% Defines a new accidental style called "bhs-voice-cautionary", which is based on the built-in "voice" and "modern-cautionary" accidental styles:
+
+%% From music-functions.scm:
+%% - accidental-styles alist:
+%%   "Each accidental style needs three entries for the context properties extraNatural, autoAccidentals and autoCautionaries. An optional fourth entry may specify a default context for the accidental style, for use with the piano styles."
+%% - (make-accidental-rule octaveness laziness):
+%%     "Create an accidental rule that makes its decision based on the octave of the note and a laziness value.
+%%      octaveness is either 'same-octave or 'any-octave and defines whether the rule should respond to accidental changes in other octaves than the current.  'same-octave is the normal way to typeset accidentals -- an accidental is made if the alteration is different from the last active pitch in the same octave.  'any-octave looks at the last active pitch in any octave.
+%%      laziness states over how many bars an accidental should be remembered. 0 is the default -- accidental lasts over 0 bar lines, that is, to the end of current measure.  A positive integer means that the accidental lasts over that many bar lines.  -1 is `forget immediately', that is, only look at key signature.  #t is `forever'."
+
+%% The following defines a new accidental style called "bhs-voice-cautionary", which is based on the built-in "voice" and "modern-cautionary" accidental styles:
 %% - Sets extraNatural to #f
 %% - All rules apply to the Voice context, rather than the Staff context
-%% - Accidentals are remembered to the end of the measure in which they occur and only in their own octave
-%% - After temporary accidentals, cautionary cancellation marks are printed also in the following measure (for notes in the same octave) and, in the same measure, for notes in other octaves.
+%% - autoAccidentals: Accidentals are remembered to the end of the measure in which they occur and only in their own octave
+                                % TODO: Technically, this implementation is incorrect, but I like it better in most cases.
+%% - autoCautionaries: After temporary accidentals, cautionary cancellation marks are printed also in the following measure (for notes in the same octave) and, in the same measure, for notes in other octaves.
 #(set! accidental-styles (append accidental-styles
                           `(
                             (bhs-voice-cautionary
