@@ -80,8 +80,7 @@
                                 % TODO: Time signature change spec is currently unimplemented
 
 \paper {
-                                % TODO: This was a useful tool in previous versions, but it crashes horribly right now with some wrong type argument errors. Figure out what's going wrong and whether it's my fault. If so, fix it. If not, re-enable this later.
-  % annotate-spacing = #BHSDebug
+  annotate-spacing = #BHSDebug
   
   page-breaking = #(if TagPage
                     ly:one-page-breaking
