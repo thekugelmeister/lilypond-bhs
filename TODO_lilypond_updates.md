@@ -1,6 +1,10 @@
 # LilyPond Update To-Do List
 List of relevant LilyPond updates that might simplify / modify / otherwise affect functionality added in this package.
 
+## General notes
+
+* I have made changes to the file `lilypond/2.20.0/scm/song.scm` to improve festival synthesis. These should either be pushed to lilypond or documented in this repository.
+
 ## [v2.22](http://lilypond.org/doc/v2.22/Documentation/changes/)
 
 * Swing and irregular rhythmic patterns may now be applied to music expressions made of regular durations, which may be used to render inequal rhythmic interpretation in MIDI.
