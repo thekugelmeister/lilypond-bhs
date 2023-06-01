@@ -7,6 +7,7 @@
                                 % TODO: sox crashes when only one voice part provided.
                                 % TODO: Make FestivalHalfTempo work automatically, instead of requiring user to change tempo globally.
                                 % TODO: Should FestivalOctaveDown and FestivalHalfTempo be mutually exclusive options?
+                                % TODO: FestivalOctaveDown is currently disabled because it does not work correctly. When changing octave, then doubling speed, the output file is not the correct length.
 
 %{
 FestivalOctaveDown must be used if any part hits a note over 500 Hz (B5 by Festival standards, B4 by most other standards).
