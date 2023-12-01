@@ -4,6 +4,7 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
 ## General notes
 
 * I have made changes to the file `lilypond/2.20.0/scm/song.scm` to improve festival synthesis. These should either be pushed to lilypond or documented in this repository.
+* Music function definitions are inconsistent in their documentation style; consider defaulting to style in https://github.com/lilypond/lilypond/blob/master/ly/music-functions-init.ly?
 
 ## [v2.22](http://lilypond.org/doc/v2.22/Documentation/changes/)
 
