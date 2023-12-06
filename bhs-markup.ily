@@ -18,22 +18,40 @@ You should have received a copy of the GNU General Public License
 along with LilyPond Barbershop Template.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
+%{ bhs-markup.ily
+  Methods for modifying music / lyric definitions during the notation process, in BHS-specific manners.
+  All of these methods can be used independently from the rest of the template.
+  To use, simply add the following line to the top of the .ly file:
+    \include "bhs-markup.ily"
+ %}
+
+%%% Contest suitability statement
+%% Standard boilerplate text included at the end of the Performance Notes for nearly all BHS-released sheet music.
+%% Example usage:
+%% header {
+%%  performancenotes = \markuplist {
+%%    \wordwrap-string "Lorem ipsum"
+%%    \contestSuitability
+%%  }
+%% }
 contestSuitability = \markup {
   \wordwrap {
     As a final note: Questions about the contest suitability of this song/arrangement should be directed to the judging community and measured against current contest rules. Ask \italic before you sing.
   }
 }
 
-                                % TODO: Write wrappers for the swing articulation that only affects midi output (even better: also affects festival output).
 
 %%% @Section B.14.a
 %% If the lower voice on a staff crosses over the top voice on the same staff, place a lower-case x in 10-point fixed size Arial type, above the staff where the first note of the chord occurs.
 %% voiceCross: Add a voice crossing mark to a note.
+%% Example usage:
+%% f1\voiceCross
 voiceCross=#(define-event-function () ()
              #{
-             ^\markup { \abs-fontsize #10 { \override #'(font-name . "Arial") x } }
+             ^\markup { \abs-fontsize #10 { \sans x } }
              #}
            )
+
 
 %% voiceCrosses: Mark the given set notes as crossed.
                                 % TODO: Does this even work right now? If it does, start using it! If it doesn't, either fix it or remove it.
@@ -47,14 +65,17 @@ voiceCrosses =
 
 %% newSection: Demarcate new section with a double bar line and a label
                                 % TODO: Document manual reference and missing functionality.
+%% Example usage:
+%% \newSection "Intro"
 newSection =
 #(define-music-function
   (parser location text)
   (markup?)
   #{
-  \bar "||" \mark \markup { \abs-fontsize #12 { \override #'(font-name . "Times Bold") #text } }
+  \bar "||" \mark \markup { \abs-fontsize #12 { \roman \bold #text } }
   #}
 )
+
 
 %% http://lsr.di.unimi.it/LSR/Item?id=538
 %% optionalNotes: Given a chord, makes the first note normal size and the remaining notes a smaller size.
@@ -74,7 +95,10 @@ optionalNotes =
                 copy) x))
    x))
 
+
 %% skips: Insert a given number of lyric skips
+%% Example usage:
+%% \skips 8
 skips =
 #(define-music-function
   (parser location nskips)
@@ -94,6 +118,7 @@ Insert a given number of lyric skips, accounting appropriately for terminating l
  }
    #}
  ))
+
 
                                 % TODO: I need a better solution for this. First of all, the fact that it's completely manual makes it difficult to use. It should somehow be able to determine placement automatically. Second, these take up no actualy space, as far as I can tell? So they get kind of clobbered by other grobs.
 %% adapted from http://lsr.di.unimi.it/LSR/Snippet?id=961
@@ -129,6 +154,7 @@ caesura =
 )
 
 
+%% Changes note heads to denote clapping.
 clapping =
 #(define-music-function
   (parser location music)
