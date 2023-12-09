@@ -24,6 +24,7 @@ Time = {
   \tempo 4=80
 }
 
+ScoreSpec = "bhs-ttbb"
 TagPage = ##t
 
 
@@ -107,9 +108,7 @@ LeadFestivalLyrics = \lyricmode {
 BariFestivalLyrics = \TenorFestivalLyrics
 BassFestivalLyrics = \TenorFestivalLyrics
 
-\include "bhs-init.ily"
-\include "score-specs/bhs-ttbb.ily"
-\include "lilypond-bhs.ily"
+\include "bhs-lilypond.ily"
 
 % \include "bhs-festival.ily"
 % \BHSFestival

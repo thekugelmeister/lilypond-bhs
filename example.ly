@@ -34,6 +34,8 @@ Time = {
   % \tempo 4=40
 }
 
+ScoreSpec = "bhs-ttbb"
+
 
 TenorMusic = \relative c'' {
   |
@@ -473,9 +475,7 @@ BassFestivalLyrics = \lyricmode {
   Shine for me and my gal!
 }
 
-\include "bhs-init.ily"
-\include "score-specs/bhs-ttbb.ily"
-\include "lilypond-bhs.ily"
+\include "bhs-lilypond.ily"
 
 % \include "bhs-festival.ily"
 % FestivalHalfTempo = ##t

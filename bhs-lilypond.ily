@@ -1,16 +1,151 @@
-\version "2.20"
+%{ bhs-init.ily
+ %}
+%{ Debugging methods %}
+#(begin
+  (define (debug-error-print msg)
+    (format (current-error-port) "\n~a: ~a\n" (current-module) msg))
+)
+
+#(debug-error-print "bhs-init.ily: beginning; includes")
 \include "base-tkit.ly"
-#(load "bhs-utils.scm")
 
-                                % TODO: I need to find somewhere to document these
-                                % The following are useful functions for tweaking in scheme
-                                % (grob::display-objects grob)
-                                % (grob::all-objects grob)
+#(debug-error-print "bhs-init.scm: defining utility methods...")
+%{ 
+  (zip-flatten LIST_A LIST_B): zips elements of LIST_A and LIST_B, then flattens the result into a single list
 
-                                % TODO: This is probably not worth it, and I should instead be using (load) to import modules, etc.
-%% Force lilypond guile to include this directory in its load path
-#(set! %load-path (cons (getcwd) %load-path))
+  (first-bar-number-visible-and-no-parenthesized-bar-numbers): Bar number visibility settings for this template. Not intended to be called directly; see LilyPond documentation on bar number visibility for details. Enables display of first measure bar number and suppresses parenthesization of bar numbers for partial measures.
+ %}
+#(begin
+  (ly:load "define-markup-commands.scm")
 
+  (define (zip-flatten a b)
+        (reduce-right append! '() (zip a b)))
+  
+  (define-markup-command (fromproperties layout props symbol)
+        (symbol?)
+        #:category other
+        #:properties ((align-dir #f)
+                      (word-space)
+                      (baseline-skip)
+                      (paragraph-spaces 1))
+        "Modified from https://lists.gnu.org/archive/html/lilypond-user/2014-02/msg00657.html (by Thomas Morley)
+- Adding vspace to get around bugs with vertical spacing of wordwrapped text in columns
+Read the @var{symbol} from property settings, and produce a stencil
+from the markup or markuplist contained within.
+If @var{align-dir} is set @code{#f} the stencil is one line.  Setting
+@var{align-dir} to a number will output a column, vertically aligned according
+to @var{align-dir}.
+Interleaves the elements of a given markuplist with vspaces of size @var{paragraph-spaces}.
+If @var{symbol} is not defined, it returns an empty markup.
+"
+        (let ((m (chain-assoc-get symbol props))
+              ;; prevent infinite loops by clearing the interpreted property:
+              (new-props
+                (cons (list (cons symbol `(,property-recursive-markup ,symbol)))
+                      props)))
+            (cond
+                ((markup? m)
+                 (interpret-markup layout new-props m))
+                ((markup-list? m)
+                 (let* ((spaced_m (zip-flatten m (make-list (length m) (markup #:vspace paragraph-spaces))))
+                        (stencils (interpret-markup-list layout new-props spaced_m)))
+                        (cond
+                            (align-dir (general-column align-dir baseline-skip stencils))
+                            (else (stack-stencil-line word-space stencils)))))
+                (else empty-stencil))))
+  
+  (define-markup-command (generate-perf-notes layout props)
+        ()
+        (let ((perf-notes (chain-assoc-get 'header:performancenotes props)))
+            (if (or (markup? perf-notes) (markup-list? perf-notes))
+                (interpret-markup layout props
+                        #{\markup \column {
+                            \override #'(thickness . 4)
+                            \draw-hline
+                            \vspace #0.5
+                            \bold \italic \abs-fontsize #18 "Performance Notes"
+                            \vspace #0.5
+                            \abs-fontsize #10 {
+                                \override #'(align-dir . -1)
+                                \fromproperties #'header:performancenotes
+                            }
+                          }
+                         #})
+                empty-stencil)))
+  
+  (define-markup-command (fromproperty-apply layout props symbol proc)
+        (symbol? procedure?)
+        "Identical to fromproperty, but applies the given scheme procedure to the markup prior to interpretation."
+        (let ((m (chain-assoc-get symbol props)))
+            (if (markup? m)
+                ;; prevent infinite loops by clearing the interpreted property:
+                (interpret-markup layout (cons (list (cons symbol `(,property-recursive-markup ,symbol))) props)
+                    (proc m))
+                empty-stencil)))
+  
+  (define (first-bar-number-visible-and-no-parenthesized-bar-numbers barnum mp)
+    (= (ly:moment-main-numerator mp) 0))
+  
+  (define default-lyricist-composer-arranger "UNKNOWN")
+
+  (define-markup-command (lyricist-composer-arranger layout props)
+        ()
+        "
+TODO: I'm pretty sure that this relies on the user only setting these header variables as strings, not as other valid markups. This is undesirable. Refactor to allow arbitrary markup if possible.
+
+This function is designed to provide the logic for displaying the lyricist, composer, and arranger name sections correctly based on their inclusion in the header block. See sections A.6-8 in the BHS Notation Manual for further documentation.
+
+This information is displayed on a maximum of two lines, each with a left-aligned component and a right-aligned component, making a total of four 'quadrants' to fill.
+
+Taking 'unset' variables into account leads to redundancy in the mapping for no good reason. Therefore, the mappings are defined assuming that any unset variables are already set to the placeholder 'UNKNOWN' value. This leaves us with only five cases to consider:
+  0: All three are the same (@Section A.8.b)
+  1: Lyricist and Composer are the same (@Section A.7.a)
+  2: Lyricist and Arranger are the same (NOT COVERED IN SPEC)
+  3: Composer and Arranger are the same (NOT COVERED IN SPEC)
+  4: All three are different (@Sections A.6, A.7.b, A.8.a)
+NOTE: Some of these cases are not explicitly covered in the manual, so I made educated guesses...
+"
+        (let* ((lyricist (string-upcase (chain-assoc-get 'header:lyricist props default-lyricist-composer-arranger)))
+               (composer (string-upcase (chain-assoc-get 'header:composer props default-lyricist-composer-arranger)))
+               (arranger (string-upcase (chain-assoc-get 'header:arranger props default-lyricist-composer-arranger)))
+               (lyco (string-ci= lyricist composer))
+               (lyar (string-ci= lyricist arranger))
+               (coar (string-ci= composer arranger)))
+            (cond
+                ((and lyco coar)
+                    (interpret-markup layout props #{ \markup \column {
+                                                        \fill-line { \null "Words, Music, and Arrangement by" }
+                                                        \fill-line { \null #lyricist }
+                                                      }
+                                                     #}))
+                (lyco
+                    (interpret-markup layout props #{ \markup {
+                                                        \fill-line { #(string-append "Words and Music by " lyricist) #(string-append "Arrangement by " arranger) }
+                                                      }
+                                                     #}))
+                (lyar
+                    (interpret-markup layout props #{ \markup {
+                                                        \fill-line { #(string-append "Music by " composer) #(string-append "Words and Arrangement by " lyricist) }
+                                                      }
+                                                     #}))
+                (coar
+                    (interpret-markup layout props #{ \markup {
+                                                        \fill-line { #(string-append "Words by " lyricist) #(string-append "Music and Arrangement by " composer) }
+                                                      }
+                                                     #}))
+                (else
+                    (interpret-markup layout props #{ \markup \column {
+                                                        \fill-line { #(string-append "Words by " lyricist) #(string-append "Music by " composer) }
+                                                        \fill-line { \null #(string-append "Arrangement by " arranger) }
+                                                      }
+                                                     #})))))
+)
+
+#(debug-error-print "bhs-init.ily: top section")
+% TODO: I need to find somewhere to document these
+% The following are useful functions for tweaking in scheme
+% (grob::display-objects grob)
+% (grob::all-objects grob)
 
 %%% @Section B.9.a
 %% An accidental affects only one voice part for one measure, unless the pitch is tied over the bar line, in which case the accidental is in force only for the duration of the tied note. If the tied pitch is repeated in the new measure, then another accidental is required. Accidentals include the flat, sharp, natural, double flat and double sharp. To cancel a double sharp in a measure, simply use a single sharp. Likewise, to cancel a double flat, use a single flat.
@@ -42,20 +177,55 @@
                               ,(make-accidental-rule 'same-octave 1))))))
 
 
-%% Generic Settings and Initialization
-\pointAndClickOff
+%% Generic Settings and Initialization: All of these default to #f
+% BHSDebug: When set to #t, enables some useful debug output. TODO: Is this currently working?
+% TagPage: When set to #t, formats the page layout for tags; rather than having multiple pages, lays out a single auto-sized page that fits the tag.
+% ShowTempo: When set to #t, displays the tempo on the first page.
+% TODO: Maybe make a "final" option that automatically sets this, to enable point-and-click while working?
+% \pointAndClickOff
+#(begin
+  (define other-settings
+    '("BHSDebug"
+      "TagPage"
+      "ShowTempo"))
+  (define-missing-variables! other-settings)
 
-#(define other-settings
-  '("BHSDebug"
-    "TagPage"
-    "ShowTempo"))
-#(define-missing-variables! other-settings)
+  (cond
+    (BHSDebug
+      (ly:set-option 'debug-skylines)
+      (ly:set-option 'debug-page-breaking-scoring)))
+)
 
-#(cond
-  (BHSDebug
-   (ly:set-option 'debug-skylines)
-   (ly:set-option 'debug-page-breaking-scoring)
- ))
+%{ ScoreSpec: 
+  REQUIRED: Set this to the basename of the score spec to use. Searches in the default score spec directory for matching files.
+  Defaults to the empty string.
+  TODO: Is there a better place to document this?
+ %}
+#(if (null? (ly:parser-lookup 'ScoreSpec))
+  (ly:parser-define! 'ScoreSpec ""))
+
+%{ Define the default directory in which to search for score specs
+ %}
+#(define score-spec-dir "score-specs")
+
+%{ Dynamically load the requested score spec from the default location. Provide only the basename (e.g. no file extention)
+  Raises an error if score spec is undefined or a score spec matching the requested name is not found.
+  Example usage:
+    \loadScoreSpec "bhs-ttbb"
+  TODO: This is a kind of silly way to do this. This method was chosen to easily facilitate mixing of scheme and lilypond when including files. Are there better options?
+  %}
+loadScoreSpec = 
+#(define-void-function (spec-name) (string?)
+    (if (string-null? spec-name)
+      (error (format #f "ERROR: score spec not defined"))
+      (let ((score-spec-file-path (string-append score-spec-dir file-name-separator-string spec-name ".ily")))
+        (if (file-exists? score-spec-file-path)
+          #{
+            \include #score-spec-file-path
+          #}
+          (error (format #f "ERROR: score spec not found: ~a" score-spec-file-path)))))
+)
+\loadScoreSpec #ScoreSpec
 
 %% BHS Settings
 %%% @Section A.1.a
@@ -78,7 +248,7 @@
 %%% @Section B.5.c
 %% Indicate a meter change that preserves the time value of the basic beat
                                 % TODO: Time signature change spec is currently unimplemented
-
+#(debug-error-print "bhs-init.ily: paper section")
 \paper {
   annotate-spacing = #BHSDebug
   
@@ -86,7 +256,7 @@
                     ly:one-page-breaking
                     ly:optimal-breaking)
 
-%%% @Section A.2
+  %%% @Section A.2
   %% Use 1/2” to 5/8” margins at the top, bottom and sides of all pages. The ends of each music system, including the choral bracket, sit within and abut the side margins.
   #(set-paper-size "letter")
   bottom-margin = 0.50\in
@@ -96,7 +266,7 @@
   line-width = 7.375\in % 8.5 inch page width - ( inner-margin + outer-margin )
   ragged-last-bottom = ##t
 
-%%% @Section A.1.d
+  %%% @Section A.1.d
   %% The standard format is three or four systems on the first page, and four or five systems on the other pages.  Use good judgment.  Avoid crowding too many systems on a page.  On the first page, save room above the first system for song title, writers and arrangers.
                                 % TODO: This does not do a great job. Fix it.
   %% NOTE: This still seems to be pretty much impossible in LilyPond. The current setting is kind of "good enough". It combines max-systems-per-page with flexible vertical spacing settings to make things look good, while hoping that we never hit a scenario where too few systems end up on a page.
@@ -108,28 +278,41 @@
   markup-system-spacing.padding = #4 % ensure there is a nice amount of space below the title markup
   % page-breaking-system-system-spacing.basic-distance = #5 % trick the page breaker into thinking there needs to be a sufficiently large gap between systems, such that the first page will not have 5 systems on it
 
+  % TODO: Times New Roman on Macs is currently broken: N becomes a different glyph (I with dot underneath)
+  % References:
+  % https://lists.gnu.org/archive/html/lilypond-user/2022-12/msg00349.html
+  % https://gitlab.com/lilypond/lilypond/-/issues/6508
+  % https://discussions.apple.com/thread/254519584
+  % In the short term, disable Times New Roman if system is detected as Mac (Darwin). The default font is not great for lyrics somehow, but at least it displays characters correctly.
   #(define fonts
-    (set-global-fonts
-     #:roman "Times New Roman"
-     #:sans "Arial"
-     #:factor (/ staff-height pt 20) ; unnecessary if the staff size is default
-   ))
-
+    (if (string-ci= (utsname:sysname (uname)) "Darwin")
+        (set-global-fonts
+          #:roman "LilyPond Serif"
+          #:sans "Arial"
+          #:factor (/ staff-height pt 20) ; unnecessary if the staff size is default
+        )
+        (set-global-fonts
+          #:roman "Times New Roman,"
+          #:sans "Arial"
+          #:factor (/ staff-height pt 20) ; unnecessary if the staff size is default
+        )))
+  
+  % Reference for the following markups: https://lilypond.org/doc/Documentation/notation/custom-titles-headers-and-footers
   bookTitleMarkup = \markup {
     \column {
-%%% @Section A.4.a
+      %%% @Section A.4.a
       %% Center the song title at the top of the first page. Use all capital letters in 22 point fixed size ARIAL BOLD type.
       \fill-line { \abs-fontsize #22 { \sans \bold \fromproperty-apply #'header:title #(lambda (x) (string-upcase x))} }
-%%% @Section A.4.b
+      %%% @Section A.4.b
       %% If the song title includes a parenthetical phrase or word, center the parenthetical expression and use capital letters, 12-point fixed size ARIAL BOLD type.
       \fill-line { \abs-fontsize #12 { \sans \bold \fromproperty-apply #'header:subtitle #(lambda (x) (string-append "(" (string-upcase x) ")"))} }
-%%% @Section A.5
+      %%% @Section A.5
       %% If the song is in public domain, center the year it was written in parentheses directly below the title, in 12-point fixed size Arial Bold.
       \fill-line { \abs-fontsize #12 { \sans \bold \fromproperty-apply #'header:date #(lambda (x) (string-append "(" x ")"))} }
-%%% @Section A.9
+      %%% @Section A.9
       %% Center under the title any acknowledgment or indication of the group that popularized the arrangement. Use 10-point fixed size Times New Roman Italictype
       \fill-line { \abs-fontsize #10 { \italic \fromproperty #'header:addinfo } }
-%%% @Section A.6-8
+      %%% @Section A.6-8
       %% See documentation for lyricist-composer-arranger in utilities.
                                 % TODO: When there are multiple people, apparently the "and" between names should not be capitalized.
       \abs-fontsize #12 {
@@ -141,11 +324,11 @@
   }
 
   oddFooterMarkup = \markup {
-%%% @Section A.14.a
+    %%% @Section A.14.a
     %% Center the copyright notice at the bottom of the first page of music. Include, at a minimum, the date of the copyright and the name of the copyright owner. Use 9-point regular fixed size Times New Roman type. The copyright owner will specify the form and content of the copyright notice.
-%%% @Section A.14.b-g
+    %%% @Section A.14.b-g
                                 % TODO: Copyright stuff is complicated. It seems reasonable to me to leave copyright formatting as an exercise for the user, but I can see the utility of having pre-formatted inclusions available for the ones given in the spec.
-    \on-the-fly #part-first-page
+    \if \on-first-page-of-part 
     \column {
       \strut
       \strut
@@ -153,12 +336,12 @@
         \fill-line { \override #'(align-dir . 0) \override #'(paragraph-spaces . 0) \fromproperties #'header:copyright }
       }
     }
-%%% @Section C.5.a
+    %%% @Section C.5.a
     %% Place Performance Notes after the music in 18-point fixed size Times New Roman bold italic type, with a solid horizontal line separating the last music system from the Performance Notes in Arial 18-point fixed size bold.
-%%% @Section C.5.b
+    %%% @Section C.5.b
     %% Performance notes indicate possible performance options for the music, are in 10-point regular fixed size Times New Roman type, and may include historical information about the song and its author and composer, the arranger, and any artist who popularized the song.
                                 % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
-    \on-the-fly #last-page
+    \if \on-last-page
     \generate-perf-notes
   }
 
@@ -169,19 +352,20 @@
   oddHeaderMarkup = \markup {
     \fill-line {
       \null
-      \abs-fontsize #12 { \on-the-fly #not-part-first-page \italic \fromproperty #'header:title }
-      \abs-fontsize #12 { \on-the-fly #print-page-number-check-first \italic \fromproperty #'page:page-number-string }
+      \abs-fontsize #12 { \unless \on-first-page-of-part \italic \fromproperty #'header:title }
+      \abs-fontsize #12 { \if \should-print-page-number \italic \fromproperty #'page:page-number-string }
     }
   }
   evenHeaderMarkup = \markup {
     \fill-line {
-      \abs-fontsize #12 { \on-the-fly #print-page-number-check-first \italic \fromproperty #'page:page-number-string }
-      \abs-fontsize #12 { \on-the-fly #not-part-first-page \italic \fromproperty #'header:title }
+      \abs-fontsize #12 { \if \should-print-page-number \italic \fromproperty #'page:page-number-string }
+      \abs-fontsize #12 { \unless \on-first-page-of-part \italic \fromproperty #'header:title }
       \null
     }
   }
 }
 
+#(debug-error-print "bhs-init.ily: layout section")
 Layout = \layout {
   \context {
     \Score
@@ -271,5 +455,89 @@ Layout = \layout {
                                 % TODO: This does not really do what it needs to. Fix it.
     % \override VerticalAxisGroup.nonstaff-relatedstaff-spacing.stretchability = #10
     % \override VerticalAxisGroup.nonstaff-unrelatedstaff-spacing.stretchability = #30
+  }
+}
+
+#(debug-error-print "bhs-init.ily: end")
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \include "lilypond-bhs.ily"
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%{ lilypond-bhs.ily
+  TODO: The chord display functionality could be useful in the future; should it be reenabled?
+ %}
+#(debug-error-print "lilypond-bhs.ily...")
+\include "vocal-tkit.ly"
+
+BHSBarSandwich =
+#(define-music-function (music) (scheme?)
+  (_i "Sandwich the given music between a blank bar line and a closing bar line")
+  (if music
+   #{{\bar "" #music \bar "|."}#}
+   (make-music 'SequentialMusic 'void #t)))
+
+% Uses builtin LilyPond base-tkit.ily functionality to register the prefixes defined by the score spec; hard-codes lyric postfix; no additional lyric-only verses enabled
+#(set-music-definitions!
+  (staves-voice-prefixes)
+  '("Lyrics")
+  '())
+
+% Automatically wraps each music definition in a BHSBarSandwich (blank bar line and closing bar line).
+% This is done by redefining each music definition as itself surrounded by the sandwich, at the module level.
+% This implementation is required thanks to the utilization of the builtin LilyPond vocal-tkit.ly \make-N-voice-vocal-staff functionality, which automatically retrieves music definitions based on voice names.
+% TODO: This appears to be functional, but is clunky. Are there any strange side effects? Are there other ways to do this? Maybe this is a convincing argument for not relying on the builtin functionality, or at least copying it over and modifying it.
+#(for-each (lambda (name)
+            (module-define! (current-module)
+             (string->symbol name) (BHSBarSandwich (get-id name))))
+  all-music-names)
+
+                                % TODO: Always having this be a chorus staff is convenient for the BHS usecase, but isn't necessarily the desired option for all cases. For example, with a solo 5th part, it might be nice for the solo line to be a member of its own staff. I think this would require a new outer-most class for score specification that defines what type of staff you want. Even better would be a version of generate-staff-definition for choir-staff-spec objects, so this line would barely change.
+BHSLyStaff = << \new ChoirStaff << #(make-simultaneous-music (map generate-staff-definition staves)) >> >>
+
+\tagGroup #'(print play)
+
+% TODO: If this should be re-included, move it to bhs-init.ily. Also consider the updated interface here: https://lilypond.org/doc/Documentation/notation/context-modification-identifiers
+% \layout {
+%   \context {
+%     \Staff
+%     \override VerticalAxisGroup.remove-empty = ##t
+%     \override VerticalAxisGroup.remove-first = ##t
+%   }
+% }
+
+\score {
+  \keepWithTag #'print
+  % #(if have-music
+  %      #{ << \Chords \BHSLyStaff >> #}
+  %      #{ { } #} )
+  #(if have-music
+       #{ << \BHSLyStaff >> #}
+       #{ { } #} )
+  \layout { $(if Layout Layout) }
+}
+
+
+%% To avoid note collisions for multiple voices voices on one staff, assign the midi performer to the Voice context.
+\score {
+  \keepWithTag #'play
+  % #(if have-music
+  %      #{ << \Chords \BHSLyStaff >> #}
+  %      #{ { } #} )
+  #(if have-music
+       #{ << \BHSLyStaff >> #}
+       #{ { } #} )
+  \midi {
+    \context {
+      \Staff
+      \remove "Staff_performer"
+    }
+    \context {
+      \Voice
+      \consists "Staff_performer"
+    }
+    % \context {
+    %   \ChordNames
+    %   midiInstrument = #"voice oohs"
+    % }
   }
 }
