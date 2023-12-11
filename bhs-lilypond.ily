@@ -343,6 +343,7 @@ loadScoreSpec =
     %%% @Section C.5.b
     %% Performance notes indicate possible performance options for the music, are in 10-point regular fixed size Times New Roman type, and may include historical information about the song and its author and composer, the arranger, and any artist who popularized the song.
                                 % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
+                                % TODO: Collides with copyright if both are defined and performance notes go on first page. Is this worth trying to fix?
     \if \on-last-page
     \generate-perf-notes
   }
