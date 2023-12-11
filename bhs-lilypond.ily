@@ -182,7 +182,7 @@ NOTE: Some of these cases are not explicitly covered in the manual, so I made ed
 % TagPage: When set to #t, formats the page layout for tags; rather than having multiple pages, lays out a single auto-sized page that fits the tag.
 % ShowTempo: When set to #t, displays the tempo on the first page.
 % TODO: Maybe make a "final" option that automatically sets this, to enable point-and-click while working?
-% \pointAndClickOff
+\pointAndClickOff
 #(begin
   (define other-settings
     '("BHSDebug"
