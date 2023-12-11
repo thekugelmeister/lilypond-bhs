@@ -14,6 +14,8 @@
   (zip-flatten LIST_A LIST_B): zips elements of LIST_A and LIST_B, then flattens the result into a single list
 
   (first-bar-number-visible-and-no-parenthesized-bar-numbers): Bar number visibility settings for this template. Not intended to be called directly; see LilyPond documentation on bar number visibility for details. Enables display of first measure bar number and suppresses parenthesization of bar numbers for partial measures.
+
+  TODO: manually loading define-markup-commands.scm seems to only be necessary for using the method (general-column) in the definition of the markup command (fromproperties). This in turn is only seemingly necessary for something related to vertical spacing of wordwrapped text in columns (see documentation for that method.) This single inclusion leads to redefinition of a number of methods, and causes a number of warnings to be thrown. Figure out whether this is necessary, and remove this inclusion if possible.
  %}
 #(begin
   (ly:load "define-markup-commands.scm")
