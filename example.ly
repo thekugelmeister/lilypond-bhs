@@ -17,11 +17,6 @@
     \concat { "This Arrangement " \char ##x00A9 " 1985 by Barbershop Harmony Society" }
     "International Copyright Secured    All Rights Reserved"
   }
-  performancenotes = \markuplist {
-    \wordwrap-string "This arrangement was selected as the example due to its use as the example in the reference document, \"Notating Barbershop Arrangements\" from 2015. It does a fairly decent job at showing off the formatting specification, and allows a direct comparison to the official documentation. Note that I am not the copyright holder; contact the BHS for details on this arrangement."
-    \wordwrap-string "Note that the festival synthesized output for a track this fast tends to be a little buggy. To address this, the festival output is set to be generated at half speed and sped up to the desired tempo, resulting in a lower-fidelity but rhythmically more accurate track. Additionally, some lyrics have been altered in the festival output to ensure rhythmic and lyrical accuracy, wherever possible."
-    \contestSuitability
-  }
 }
 
 Key = {
@@ -35,6 +30,11 @@ Time = {
 }
 
 ScoreSpec = "bhs-ttbb"
+PerformanceNotes = \markuplist {
+  \wordwrap-string "This arrangement was selected as the example due to its use as the example in the reference document, \"Notating Barbershop Arrangements\" from 2015. It does a fairly decent job at showing off the formatting specification, and allows a direct comparison to the official documentation. Note that I am not the copyright holder; contact the BHS for details on this arrangement."
+  \wordwrap-string "Note that the festival synthesized output for a track this fast tends to be a little buggy. To address this, the festival output is set to be generated at half speed and sped up to the desired tempo, resulting in a lower-fidelity but rhythmically more accurate track. Additionally, some lyrics have been altered in the festival output to ensure rhythmic and lyrical accuracy, wherever possible."
+  \contestSuitability
+}
 
 
 TenorMusic = \relative c'' {

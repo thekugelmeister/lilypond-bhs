@@ -3,7 +3,7 @@
 %{ Debugging methods %}
 #(begin
   (define (debug-error-print msg)
-    (format (current-error-port) "\n~a: ~a\n" (current-module) msg))
+    (format (current-error-port) "\n~a: ~a" (current-module) msg))
 )
 
 #(debug-error-print "bhs-init.ily: beginning; includes")
@@ -18,62 +18,8 @@
   TODO: manually loading define-markup-commands.scm seems to only be necessary for using the method (general-column) in the definition of the markup command (fromproperties). This in turn is only seemingly necessary for something related to vertical spacing of wordwrapped text in columns (see documentation for that method.) This single inclusion leads to redefinition of a number of methods, and causes a number of warnings to be thrown. Figure out whether this is necessary, and remove this inclusion if possible.
  %}
 #(begin
-  (ly:load "define-markup-commands.scm")
-
   (define (zip-flatten a b)
         (reduce-right append! '() (zip a b)))
-  
-  (define-markup-command (fromproperties layout props symbol)
-        (symbol?)
-        #:category other
-        #:properties ((align-dir #f)
-                      (word-space)
-                      (baseline-skip)
-                      (paragraph-spaces 1))
-        "Modified from https://lists.gnu.org/archive/html/lilypond-user/2014-02/msg00657.html (by Thomas Morley)
-- Adding vspace to get around bugs with vertical spacing of wordwrapped text in columns
-Read the @var{symbol} from property settings, and produce a stencil
-from the markup or markuplist contained within.
-If @var{align-dir} is set @code{#f} the stencil is one line.  Setting
-@var{align-dir} to a number will output a column, vertically aligned according
-to @var{align-dir}.
-Interleaves the elements of a given markuplist with vspaces of size @var{paragraph-spaces}.
-If @var{symbol} is not defined, it returns an empty markup.
-"
-        (let ((m (chain-assoc-get symbol props))
-              ;; prevent infinite loops by clearing the interpreted property:
-              (new-props
-                (cons (list (cons symbol `(,property-recursive-markup ,symbol)))
-                      props)))
-            (cond
-                ((markup? m)
-                 (interpret-markup layout new-props m))
-                ((markup-list? m)
-                 (let* ((spaced_m (zip-flatten m (make-list (length m) (markup #:vspace paragraph-spaces))))
-                        (stencils (interpret-markup-list layout new-props spaced_m)))
-                        (cond
-                            (align-dir (general-column align-dir baseline-skip stencils))
-                            (else (stack-stencil-line word-space stencils)))))
-                (else empty-stencil))))
-  
-  (define-markup-command (generate-perf-notes layout props)
-        ()
-        (let ((perf-notes (chain-assoc-get 'header:performancenotes props)))
-            (if (or (markup? perf-notes) (markup-list? perf-notes))
-                (interpret-markup layout props
-                        #{\markup \column {
-                            \override #'(thickness . 4)
-                            \draw-hline
-                            \vspace #0.5
-                            \bold \italic \abs-fontsize #18 "Performance Notes"
-                            \vspace #0.5
-                            \abs-fontsize #10 {
-                                \override #'(align-dir . -1)
-                                \fromproperties #'header:performancenotes
-                            }
-                          }
-                         #})
-                empty-stencil)))
   
   (define-markup-command (fromproperty-apply layout props symbol proc)
         (symbol? procedure?)
@@ -141,6 +87,27 @@ NOTE: Some of these cases are not explicitly covered in the manual, so I made ed
                                                         \fill-line { \null #(string-append "Arrangement by " arranger) }
                                                       }
                                                      #})))))
+  (define-markup-command 
+    (generate-perf-notes layout props)
+    ()
+    "TODO: Document this and why it needs to be a function and why PerformanceNotes can be null. Also, it annoys me that this is specified differently from ScoreSpec. Can both be defined in terms of define-missing-variables?
+TODO: Document the fact that the two baseline-skip settings refer to different skips; between paragraphs vs. lines within paragraphs; can these be set dynamically or do they have to be set explicitly to these values?"
+    (let ((perfnotes (ly:parser-lookup 'PerformanceNotes)))
+      (cond
+        ((null? perfnotes)
+          empty-stencil)
+        ((markup-list? perfnotes)
+          (interpret-markup layout props
+            #{
+              \markup \column {
+                \override #'(thickness . 4) \draw-hline
+                \vspace #0.5
+                \bold \italic \abs-fontsize #18 "Performance Notes"
+                \override #'(baseline-skip . 6) \column-lines \override #'(baseline-skip . 3) \abs-fontsize #10 \PerformanceNotes
+              }
+            #}))
+          (else
+            (error (format #f "ERROR: PerformanceNotes must be defined as a markuplist; got ~a" (class-of perfnotes)))))))
 )
 
 #(debug-error-print "bhs-init.ily: top section")
@@ -330,20 +297,23 @@ loadScoreSpec =
     %% Center the copyright notice at the bottom of the first page of music. Include, at a minimum, the date of the copyright and the name of the copyright owner. Use 9-point regular fixed size Times New Roman type. The copyright owner will specify the form and content of the copyright notice.
     %%% @Section A.14.b-g
                                 % TODO: Copyright stuff is complicated. It seems reasonable to me to leave copyright formatting as an exercise for the user, but I can see the utility of having pre-formatted inclusions available for the ones given in the spec.
-    \if \on-first-page-of-part 
-    \column {
-      \strut
-      \strut
-      \abs-fontsize #9 {
-        \fill-line { \override #'(align-dir . 0) \override #'(paragraph-spaces . 0) \fromproperties #'header:copyright }
-      }
-    }
+    % \if \on-first-page-of-part 
+    % \column {
+    %   \strut
+    %   \strut
+    %   \abs-fontsize #9 {
+    %     \fill-line { \override #'(align-dir . 0) \override #'(paragraph-spaces . 0) \fromproperties #'header:copyright }
+    %   }
+    % }
     %%% @Section C.5.a
     %% Place Performance Notes after the music in 18-point fixed size Times New Roman bold italic type, with a solid horizontal line separating the last music system from the Performance Notes in Arial 18-point fixed size bold.
     %%% @Section C.5.b
     %% Performance notes indicate possible performance options for the music, are in 10-point regular fixed size Times New Roman type, and may include historical information about the song and its author and composer, the arranger, and any artist who popularized the song.
-                                % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
-                                % TODO: Collides with copyright if both are defined and performance notes go on first page. Is this worth trying to fix?
+    % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
+    % TODO: Collides with copyright if both are defined and performance notes go on first page. Is this worth trying to fix?
+    % TODO: Because of using baseline-skip rather than explicit vspaces, there's too much space on the top and bottom of each paragraph. Minor annoyance.
+                                
+    % TODO: I still don't like having to call a markup command to generate this. Is it possible to dynamically check for the contents of the relevant variable in lilypond syntax, rather than scheme?
     \if \on-last-page
     \generate-perf-notes
   }
