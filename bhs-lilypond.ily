@@ -40,6 +40,7 @@
         ()
         "
 TODO: I'm pretty sure that this relies on the user only setting these header variables as strings, not as other valid markups. This is undesirable. Refactor to allow arbitrary markup if possible.
+TODO: Is there any way to do this more efficiently using first-visible, and/or other builtin markup commands?
 
 This function is designed to provide the logic for displaying the lyricist, composer, and arranger name sections correctly based on their inclusion in the header block. See sections A.6-8 in the BHS Notation Manual for further documentation.
 
@@ -108,6 +109,30 @@ TODO: Document the fact that the two baseline-skip settings refer to different s
             #}))
           (else
             (error (format #f "ERROR: PerformanceNotes must be defined as a markuplist; got ~a" (class-of perfnotes)))))))
+  
+  (define-markup-command 
+    (generate-copyright layout props)
+    ()
+    "TODO: Document this and why it needs to be a function and why PerformanceNotes can be null. Also, it annoys me that this is specified differently from ScoreSpec. Can both be defined in terms of define-missing-variables?
+TODO: Honestly should combine functionality between this and generate-perf-notes"
+    (let ((copyright (ly:parser-lookup 'Copyright)))
+      (cond
+        ((null? copyright)
+          empty-stencil)
+        ((markup-list? copyright)
+          (interpret-markup layout props
+            #{
+              \markup \fill-line {
+                \center-column {
+                  \abs-fontsize #9 {
+                    \strut
+                    \Copyright
+                  }
+                }
+              }
+            #}))
+          (else
+            (error (format #f "ERROR: Copyright must be defined as a markuplist; got ~a" (class-of copyright)))))))
 )
 
 #(debug-error-print "bhs-init.ily: top section")
@@ -296,15 +321,9 @@ loadScoreSpec =
     %%% @Section A.14.a
     %% Center the copyright notice at the bottom of the first page of music. Include, at a minimum, the date of the copyright and the name of the copyright owner. Use 9-point regular fixed size Times New Roman type. The copyright owner will specify the form and content of the copyright notice.
     %%% @Section A.14.b-g
-                                % TODO: Copyright stuff is complicated. It seems reasonable to me to leave copyright formatting as an exercise for the user, but I can see the utility of having pre-formatted inclusions available for the ones given in the spec.
-    % \if \on-first-page-of-part 
-    % \column {
-    %   \strut
-    %   \strut
-    %   \abs-fontsize #9 {
-    %     \fill-line { \override #'(align-dir . 0) \override #'(paragraph-spaces . 0) \fromproperties #'header:copyright }
-    %   }
-    % }
+    % TODO: Copyright stuff is complicated. It seems reasonable to me to leave copyright formatting as an exercise for the user, but I can see the utility of having pre-formatted inclusions available for the ones given in the spec.
+    \if \on-first-page-of-part 
+    \generate-copyright
     %%% @Section C.5.a
     %% Place Performance Notes after the music in 18-point fixed size Times New Roman bold italic type, with a solid horizontal line separating the last music system from the Performance Notes in Arial 18-point fixed size bold.
     %%% @Section C.5.b
@@ -312,7 +331,6 @@ loadScoreSpec =
     % TODO: This section is sometimes way too close to the final staff. Especially true for TagPage layout. Find a way to ensure space is left between them.
     % TODO: Collides with copyright if both are defined and performance notes go on first page. Is this worth trying to fix?
     % TODO: Because of using baseline-skip rather than explicit vspaces, there's too much space on the top and bottom of each paragraph. Minor annoyance.
-                                
     % TODO: I still don't like having to call a markup command to generate this. Is it possible to dynamically check for the contents of the relevant variable in lilypond syntax, rather than scheme?
     \if \on-last-page
     \generate-perf-notes
