@@ -89,7 +89,7 @@ NOTE: Some of these cases are not explicitly covered in the manual, so I made ed
   (define-markup-command 
     (generate-perf-notes layout props)
     ()
-    "TODO: Document this and why it needs to be a function and why PerformanceNotes can be null. Also, it annoys me that this is specified differently from ScoreSpec. Can both be defined in terms of define-missing-variables?
+    "TODO: Document this and why it needs to be a function and why PerformanceNotes can be null.
 TODO: Document the fact that the two baseline-skip settings refer to different skips; between paragraphs vs. lines within paragraphs; can these be set dynamically or do they have to be set explicitly to these values?"
     (let ((perfnotes (ly:parser-lookup 'PerformanceNotes)))
       (cond
@@ -111,7 +111,7 @@ TODO: Document the fact that the two baseline-skip settings refer to different s
   (define-markup-command 
     (generate-copyright layout props)
     ()
-    "TODO: Document this and why it needs to be a function and why PerformanceNotes can be null. Also, it annoys me that this is specified differently from ScoreSpec. Can both be defined in terms of define-missing-variables?
+    "TODO: Document this and why it needs to be a function and why Copyright can be null.
 TODO: Honestly should combine functionality between this and generate-perf-notes"
     (let ((copyright (ly:parser-lookup 'Copyright)))
       (cond
@@ -188,36 +188,28 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
       (ly:set-option 'debug-page-breaking-scoring)))
 )
 
-%{ ScoreSpec: 
-  REQUIRED: Set this to the basename of the score spec to use. Searches in the default score spec directory for matching files.
-  Defaults to the empty string.
-  TODO: Is there a better place to document this?
- %}
-#(if (null? (ly:parser-lookup 'ScoreSpec))
-  (ly:parser-define! 'ScoreSpec ""))
-
 %{ Define the default directory in which to search for score specs
  %}
 #(define score-spec-dir "score-specs")
 
-%{ Dynamically load the requested score spec from the default location. Provide only the basename (e.g. no file extention)
-  Raises an error if score spec is undefined or a score spec matching the requested name is not found.
-  Example usage:
-    \loadScoreSpec "bhs-ttbb"
-  TODO: This is a kind of silly way to do this. This method was chosen to easily facilitate mixing of scheme and lilypond when including files. Are there better options?
+%{ ScoreSpec: 
+  REQUIRED: Set this to the basename of the score spec to use. Searches in the default score spec directory for matching files.
+
+  The following dynamically loads the requested score spec from the default location. Provide only the basename (e.g. no file extention)
+  Raises an error if score spec is undefined, passed as a non-string, or a score spec matching the requested name is not found.
   %}
-loadScoreSpec = 
-#(define-void-function (spec-name) (string?)
-    (if (string-null? spec-name)
-      (error (format #f "ERROR: score spec not defined"))
+#(let ((spec-name (ly:parser-lookup 'ScoreSpec)))
+  (cond
+    ((null? spec-name)
+      (error "ERROR: score spec not defined"))
+    ((string? spec-name)
       (let ((score-spec-file-path (string-append score-spec-dir file-name-separator-string spec-name ".ily")))
         (if (file-exists? score-spec-file-path)
-          #{
-            \include #score-spec-file-path
-          #}
+          #{ \include #score-spec-file-path #}
           (error (format #f "ERROR: score spec not found: ~a" score-spec-file-path)))))
+    (else
+      (error "ERROR: ScoreSpec must be defined as a string")))
 )
-\loadScoreSpec #ScoreSpec
 
 %% BHS Settings
 %%% @Section A.1.a
