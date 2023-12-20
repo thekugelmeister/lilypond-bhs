@@ -12,7 +12,7 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
     * Consider providing an example for this?
     * How does this work with Festival output?
 * As announced in version 2.17.3 nearly eight years ago, the 'relative-includes option is now enabled by default; included files that contain an \include command of their own must account for their own path rather than the main file’s directory. That behavior may however be switched off by setting 'relative-includes to #f, either as a command line option or using ly:set-option in source files.
-    * Does this break anything?
+    * This does not break anything, and in fact improves pathing now that everything is in .ly files rather than .scm files. However, maybe it should be documented that turning off relative includes may cause unexpected behavior?
 
 ## [v2.24](http://lilypond.org/doc/v2.24/Documentation/changes/)
 
@@ -35,8 +35,6 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
     * This may have impacts; verify
 * The syntax for conditions in markups was made more flexible and user-friendly. It uses the new markup commands \if and \unless. Here are example replacements:
     * This should have impacts on layout definitions
-* With the new markup list command string-lines it is now possible to split a string at a given character. The default is to split at line break. Surrounding white space gets dropped. The resulting list of markups may be further formatted. This is a very convenient way of entering additional stanzas for songs.
-    * Does this make performance notes easier to specify?
 * Text replacements can now replace strings with any markup, not just with a string.
     * This should not have impacts, but could take a look
 * The new show-horizontal-skylines and show-vertical-skylines properties allow to display an object’s skylines. This is more flexible than the already existing debug-skylines option because it works for all grobs. While primarily meant for debugging LilyPond, this can be useful when trying to understand spacing decisions or overriding stencils in Scheme.
@@ -45,5 +43,3 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
     * Could this allow for easier melody transitions, in any way? Unclear.
 * SCHEME TRANSLATOR IMPROVEMENTS
     * Would need to come back to understand more
-* The format function now requires a boolean or port as the first argument. This argument was optional in Guile 1.8. In order to make the function return the formatted output as a string, like format does without this argument in Guile 1.8, pass #f for this argument, i.e., (format #f "string" arguments …) instead of (format "string" arguments …).
-    * Hopefully does not affect this package
