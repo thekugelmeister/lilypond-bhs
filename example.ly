@@ -1,4 +1,4 @@
-\version "2.20"
+\version "2.24"
 \include "bhs-markup.ily"
 
                                 % TODO: Optional notes
@@ -39,11 +39,13 @@ Copyright = \markuplist {
 
 TenorMusic = \relative c'' {
   |
+  \section \sectionLabel "Intro"
   g2( fis2 |
   g1~ |
   g1 |
   fis2.) r4 |
 
+  \section \sectionLabel "Verse"
   d8. r16 d8. r16 c8. r16 c8. r16 |
   d8. r16 d8. r16 d4 r4 |
   d4 d4 des4. r8 |
@@ -61,6 +63,7 @@ TenorMusic = \relative c'' {
   f8 e8 f8 fis8 \tuplet 3/2 { g8 fis8 g8~ } g8 e8 |
   ees4\fermata f8. fes16 ees8. d16 ees8. f16 |
 
+  \section \sectionLabel "Chorus 1"
   g2 f2 |
   g4 f4 f4 f4 |
   c2~ c8. b16 c8. f16 |
@@ -78,6 +81,7 @@ TenorMusic = \relative c'' {
   d4~ d8. d16 cis8. cis16 cis4 |
   d4( f4 fis4) r4 |
 
+  \section \sectionLabel "Chorus 2"
   g4 f8. f16 g4 f8. f16 |
   g8. g16 f8. f16 f4 f4 |
   c4 e4 e4 e8. e16 |
@@ -95,6 +99,7 @@ TenorMusic = \relative c'' {
   d4~ d8. d16 cis8. cis16 cis4 |
   d2( f2) |
 
+  \section \sectionLabel "Tag"
   r4 e8. e16 e8. e16 e4 |
   f4 f8. f16 f8. g16 a4 |
   bes4~ bes8. bes16 bes8. bes 16 bes4 |
@@ -103,13 +108,13 @@ TenorMusic = \relative c'' {
 
 LeadMusic = \relative c' {
   |
-  \newSection "Intro"
+  \section \sectionLabel "Intro"
   d1~( |
   d1 |
   des1 |
   c2.) r4 |
 
-  \newSection "Verse"
+  \section \sectionLabel "Verse"
   bes8. r16 bes8. r16 a8. r16 a8. r16 |
   bes8. r16 bes8. r16 bes4 r4 |
   bes4 bes4 g4. r8 |
@@ -127,7 +132,7 @@ LeadMusic = \relative c' {
   d8 cis8 d8 dis8 \tuplet 3/2 { e8 dis8 e8~ } e8 c8 |
   f4\voiceCross\fermata f,8. g16 a8. bes16 c8. d16 |
 
-  \newSection "Chorus 1"
+  \section \sectionLabel "Chorus 1"
   ees2 d2 |
   ees4 d4 b4 g4 |
   e2~ e8. dis16 e8. d'16 |
@@ -145,7 +150,7 @@ LeadMusic = \relative c' {
   bes4~ bes8. f16 g8. f16 g4 |
   bes4( d4~ d4) r4 |
 
-  \newSection "Chorus 2"
+  \section \sectionLabel "Chorus 2"
   ees4 d8. d16 ees4 d8. d16 |
   ees8. ees16 d8. d16 b4 g4 |
   e4 g4 bes4 g8. g16 |
@@ -163,7 +168,7 @@ LeadMusic = \relative c' {
   bes4~ bes8. f16 g8. f16 g4 |
   bes2( b2) |
 
-  \newSection "Tag"
+  \section \sectionLabel "Tag"
   r4 d8. c16 bes8. c16 d4 |
   r4 c8. d16 ees8. ees16 ees4 |
   r4 d8. d16 c8. ees16 ees4 |
@@ -172,11 +177,13 @@ LeadMusic = \relative c' {
 
 BariMusic = \relative c' {
   |
+  \section \sectionLabel "Intro"
   bes2( c2 |
   bes1~ |
   bes1 |
   a2.) r4 |
 
+  \section \sectionLabel "Verse"
   g8. r16 g8. r16 fis8. r16 fis8. r16 |
   g8. r16 g8. r16 g4 r4 |
   g4 g4 ees4. r8 |
@@ -194,6 +201,7 @@ BariMusic = \relative c' {
   b8 ais8 b8 a8 \tuplet 3/2 { bes8 a8 bes8~ } bes8 bes8 |
   a4 r4 r2 |
 
+  \section \sectionLabel "Chorus 1"
   b2 b2 |
   b4 b4 g4 b4 |
   bes2~ bes8. a16 bes8. bes16 |
@@ -211,6 +219,7 @@ BariMusic = \relative c' {
   f4~ f8. f16 ees8. g16 ees4 |
   f4( bes4 c4) r4 |
 
+  \section \sectionLabel "Chorus 2"
   b4 b8. b16 b4 b8. b16 |
   b8. b16 b8. b16 g4 b4 |
   bes4 bes4 c4 bes8. bes16 |
@@ -228,6 +237,7 @@ BariMusic = \relative c' {
   f4~ f8. f16 ees8. g16 ees4 |
   f2( g2) |
 
+  \section \sectionLabel "Tag"
   r4 bes8. a16 g8. a16 bes4 |
   a4 a8. a16 a8. bes16 c4 |
   r4 f,8. f16 g8. c16 c4 |
@@ -236,11 +246,13 @@ BariMusic = \relative c' {
 
 BassMusic = \relative c' {
   |
+  \section \sectionLabel "Intro"
   g2( a2 |
   g2 f2 |
   ees2~ ees8 f8 ees4 |
   d2.) r8 d8 |
 
+  \section \sectionLabel "Verse"
   d8. cis16 d8. cis16 d8. cis16 d8. cis16 |
   d8 bes4 g8~ g4 g8. a16 |
   bes4 d4 bes4. g8 |
@@ -258,6 +270,7 @@ BassMusic = \relative c' {
   g8 fis8 g8 b,8 \tuplet 3/2 { c8 b8 c8~ } c8 g'8 |
   c,4\fermata r4 r2 |
 
+  \section \sectionLabel "Chorus 1"
   g'2 g2 |
   g4 g4 d4 d4 |
   g,2~ g8. fis16 g8. g16 |
@@ -275,6 +288,7 @@ BassMusic = \relative c' {
   bes,4~ bes8. bes16 bes8. bes16 bes4 |
   bes4( bes'4 a4) r4 |
 
+  \section \sectionLabel "Chorus 2"
   g4 g8. g16 g4 g8. g16 |
   g8. g16 g8. g16 d4 d4 |
   g,4 c4 g'4 c,8. c16 |
@@ -292,6 +306,7 @@ BassMusic = \relative c' {
   bes,4~ bes8. bes16 bes8. bes16 bes4 |
   bes2( d2) |
 
+  \section \sectionLabel "Tag"
   c4~ c8. c16 c8. c16 c4 |
   r4 ees8. d16 c8. c16 f4 |
   r4 bes,8. bes16 ees8. g16 ges4 |

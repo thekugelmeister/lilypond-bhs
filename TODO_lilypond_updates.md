@@ -16,8 +16,6 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
 
 ## [v2.24](http://lilypond.org/doc/v2.24/Documentation/changes/)
 
-* The new \section command inserts a double bar line that interacts gracefully with repeat bar lines. A passage can be named with the new \sectionLabel command.
-    * This should replace the \newSection functionality completely
 * The \rhythm markup command has been added. It is a simple way to enter rhythms mixed with text, such as in “swing” indications.
     * Consider adding an example of this?
 * \bar "" is no longer necessary to print the first bar number. It now suffices to set barNumberVisibility to all-bar-numbers-visible, or one of the other visibility settings where the first bar number is visible.

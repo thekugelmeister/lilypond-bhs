@@ -63,20 +63,6 @@ voiceCrosses =
 )
 
 
-%% newSection: Demarcate new section with a double bar line and a label
-                                % TODO: Document manual reference and missing functionality.
-%% Example usage:
-%% \newSection "Intro"
-newSection =
-#(define-music-function
-  (parser location text)
-  (markup?)
-  #{
-  \bar "||" \mark \markup { \abs-fontsize #12 { \roman \bold #text } }
-  #}
-)
-
-
 %% http://lsr.di.unimi.it/LSR/Item?id=538
 %% optionalNotes: Given a chord, makes the first note normal size and the remaining notes a smaller size.
                                 % TODO: Document manual reference.

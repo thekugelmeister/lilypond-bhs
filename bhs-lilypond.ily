@@ -392,6 +392,13 @@ Layout = \layout {
 
     %% Limit how close together notes can be, for readibility
     \override SpacingSpanner.base-shortest-duration = #(ly:make-moment 1/16)
+
+    % TODO: Document where this comes from in the spec
+    % TODO: Technically, this may be incorrect. I think font size should be set explicitly to 12, but there is no way to set abs-fontsize in overrides. This gets close, but try to find a way to make it explicit.
+    % TODO: This aligns incorrectly. At the beginning of lines, it aligns to the clef. Inside lines, it aligns to the double barline. It is supposed to align to the first note in the section.
+    % Font settings for section labels
+    \override SectionLabel.font-size = 1
+    \override SectionLabel.font-series = #'bold
   }
   \context {
     \Staff
