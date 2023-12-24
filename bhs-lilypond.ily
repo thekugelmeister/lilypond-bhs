@@ -173,6 +173,7 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
 % BHSDebug: When set to #t, enables some useful debug output. TODO: Is this currently working?
 % TagPage: When set to #t, formats the page layout for tags; rather than having multiple pages, lays out a single auto-sized page that fits the tag.
 % ShowTempo: When set to #t, displays the tempo on the first page.
+%   Note that setting tempo to an explicit \rhythm markup will override the setting of this variable.
 % TODO: Maybe make a "final" option that automatically sets this, to enable point-and-click while working?
 \pointAndClickOff
 #(begin
@@ -458,11 +459,12 @@ Layout = \layout {
 #(debug-error-print "lilypond-bhs.ily...")
 \include "vocal-tkit.ly"
 
+% TODO: This is no longer a sandwich, thanks to changes to first-bar-number visibility settings. Also the name is silly. Consider changing it. Or is there some other builtin way to automatically add final bar?
 BHSBarSandwich =
 #(define-music-function (music) (scheme?)
   (_i "Sandwich the given music between a blank bar line and a closing bar line")
   (if music
-   #{{\bar "" #music \bar "|."}#}
+   #{{#music \bar "|."}#}
    (make-music 'SequentialMusic 'void #t)))
 
 % Uses builtin LilyPond base-tkit.ily functionality to register the prefixes defined by the score spec; hard-codes lyric postfix; no additional lyric-only verses enabled

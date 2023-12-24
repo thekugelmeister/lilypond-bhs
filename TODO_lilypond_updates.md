@@ -16,10 +16,6 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
 
 ## [v2.24](http://lilypond.org/doc/v2.24/Documentation/changes/)
 
-* The \rhythm markup command has been added. It is a simple way to enter rhythms mixed with text, such as in “swing” indications.
-    * Consider adding an example of this?
-* \bar "" is no longer necessary to print the first bar number. It now suffices to set barNumberVisibility to all-bar-numbers-visible, or one of the other visibility settings where the first bar number is visible.
-    * I think this should suffice to render any fixes in the current version unnecessary
 * Due to changes in the internals of \bar, it is no longer supported to use it before creating lower contexts with \new. Such uses will now create an extra staff. This is similar to what happens with commands such as \override Staff… (see An extra staff appears).
     * I do not believe this affects this package, but should verify
 * The comma glyph shape, as used in the \breathe command, has been changed to a more common form.
