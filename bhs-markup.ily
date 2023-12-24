@@ -126,20 +126,6 @@ Insert a given number of lyric skips, accounting appropriately for terminating l
    #}))
 
 
-%%% @Section B.13.a:
-%% A caesura marks a break in the sound. The two slanted lines should go through the top space of the staff and rest on the fourth line.
-                                % TODO: This currently breaks festival output. Not sure why.
-caesura =
-#(define-music-function
-  (parser location)
-  ()
-  #{
-  \once \override BreathingSign.text = \markup { \musicglyph #"scripts.caesura.straight" }
-  \breathe
-  #}
-)
-
-
 %% Changes note heads to denote clapping.
 clapping =
 #(define-music-function

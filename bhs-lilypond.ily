@@ -349,6 +349,11 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
 
 #(debug-error-print "bhs-init.ily: layout section")
 Layout = \layout {
+  %%% @Section B.13.a:
+  %% A caesura marks a break in the sound. The two slanted lines should go through the top space of the staff and rest on the fourth line.
+  % TODO: At some point it was observed that breaths break festival output. Not sure why. Is this still true?
+  % TODO: Document that \breathe is how to add caesuras.
+  \set breathMarkType = #'caesura
   \context {
     \Score
 %%% @Section A.1.b

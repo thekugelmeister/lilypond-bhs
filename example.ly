@@ -5,7 +5,6 @@
                                 % TODO: Expressive text markups
                                 % TODO: Melody transfers
                                 % TODO: No-breath marks
-                                % TODO: Caesuras
 
 \header {
   title = "Shine On, Harvest Moon"
@@ -126,7 +125,7 @@ LeadMusic = \relative c' {
   ees'8. d16 ees8. d16 ees8. d16 ees8. d16 |
   ees8 c4 g8~ g4 a4 |
   bes2 r8 f8 bes8. d16 |
-  f1\voiceCross |
+  f1\voiceCross \breathe |
   c8 d8 e8 c8 d4( des4) |
   c8 d8 e8 c8 d2\fermata |
   d8 cis8 d8 dis8 \tuplet 3/2 { e8 dis8 e8~ } e8 c8 |
@@ -264,7 +263,7 @@ BassMusic = \relative c' {
   c8. r16 c8. r16 c8. r16 c8. r16 |
   c8 f4 c8~ c4 c4 |
   bes2 r8 f'8 f8. f16 |
-  bes4( aes4 g2) |
+  bes4( aes4 g2) \breathe |
   g8 g8 c,8 g'8 f4( aes4) |
   g8 g8 c,8 g'8 f4( a4\fermata) |
   g8 fis8 g8 b,8 \tuplet 3/2 { c8 b8 c8~ } c8 g'8 |

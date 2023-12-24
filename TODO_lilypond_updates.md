@@ -16,12 +16,8 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
 
 ## [v2.24](http://lilypond.org/doc/v2.24/Documentation/changes/)
 
-* Due to changes in the internals of \bar, it is no longer supported to use it before creating lower contexts with \new. Such uses will now create an extra staff. This is similar to what happens with commands such as \override Staff… (see An extra staff appears).
-    * I do not believe this affects this package, but should verify
 * The comma glyph shape, as used in the \breathe command, has been changed to a more common form.
     * I do not believe this affects this package, but should verify
-* The new context property breathMarkType selects the mark that \breathe produces from several predefined types.
-    * Does this affect the definition of caesura?
 * New commands \textMark and \textEndMark are available to add an arbitrary piece of text between notes, called a text mark. These commands improve over the previously existing syntax with the \mark command called as \mark markup (i.e., \mark "…" or \mark \markup …).
     * Should improve text markup
     * Consider adding an example of this?
