@@ -393,19 +393,20 @@ Layout = \layout {
     %% Limit how close together notes can be, for readibility
     \override SpacingSpanner.base-shortest-duration = #(ly:make-moment 1/16)
 
-    % TODO: Document where this comes from in the spec
-    % TODO: Technically, this may be incorrect. I think font size should be set explicitly to 12, but there is no way to set abs-fontsize in overrides. This gets close, but try to find a way to make it explicit.
-    % TODO: This aligns incorrectly. At the beginning of lines, it aligns to the clef. Inside lines, it aligns to the double barline. It is supposed to align to the first note in the section.
-    % Font settings for section labels
+%%% @Section A.11
+    %% Place names of sections, such as Intro, Verse, Chorus, Reprise, Interlude, or Tag, in 12-point fixed size Times New Roman Bold type, with the first letter aligned with the first note of the section. Capitalize only the first letter of the word.
+    %% TODO: Technically, this may be incorrect. Font size should be set explicitly to 12, but there is no way to set abs-fontsize in overrides. This gets close, but try to find a way to make it explicit.
+    %% TODO: This aligns incorrectly. It is supposed to align to the first note in the section. However, the break-align interface does not seem to have a valid option available.
     \override SectionLabel.font-size = 1
     \override SectionLabel.font-series = #'bold
+    \override SectionLabel.break-align-symbols = #'(time-signature key-signature clef staff-bar)
   }
   \context {
     \Staff
     \consists Bar_number_engraver
 %%% @Section A.12.a
     %% Number every measure, starting with the first full measure. Place the measure number above the treble staff and immediately following the bar line, except for the first measure of each system, where the measure number is placed above the treble staff and immediately after the key signature.
-    %%% @Section A.12.c
+%%% @Section A.12.c
     %% Use 10-point regular fixed size Times New Roman type for all measure numbers.
     \override BarNumber.break-visibility = #end-of-line-invisible
                                 % TODO: This relies on the assumption that the top staff will always be index 0 or 1 in the vertical axis group, and the lower staves will always be of index > 2. Thus far, this assumption has held for all test cases. However, I am uncomfortable with this assumption. Consider robustly checking it, or finding a better way to do it.
