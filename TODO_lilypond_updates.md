@@ -16,15 +16,6 @@ List of relevant LilyPond updates that might simplify / modify / otherwise affec
 
 ## [v2.24](http://lilypond.org/doc/v2.24/Documentation/changes/)
 
-* The comma glyph shape, as used in the \breathe command, has been changed to a more common form.
-    * I do not believe this affects this package, but should verify
-* New commands \textMark and \textEndMark are available to add an arbitrary piece of text between notes, called a text mark. These commands improve over the previously existing syntax with the \mark command called as \mark markup (i.e., \mark "…" or \mark \markup …).
-    * Should improve text markup
-    * Consider adding an example of this?
-* \smallCaps now works on any markup, not just on a bare string.
-    * This may have impacts; verify
-* The syntax for conditions in markups was made more flexible and user-friendly. It uses the new markup commands \if and \unless. Here are example replacements:
-    * This should have impacts on layout definitions
 * Text replacements can now replace strings with any markup, not just with a string.
     * This should not have impacts, but could take a look
 * The new show-horizontal-skylines and show-vertical-skylines properties allow to display an object’s skylines. This is more flexible than the already existing debug-skylines option because it works for all grobs. While primarily meant for debugging LilyPond, this can be useful when trying to understand spacing decisions or overriding stencils in Scheme.

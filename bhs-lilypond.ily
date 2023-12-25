@@ -300,6 +300,7 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
       %%% @Section A.6-8
       %% See documentation for lyricist-composer-arranger in utilities.
                                 % TODO: When there are multiple people, apparently the "and" between names should not be capitalized.
+                                % TODO: Is there any way to make this functionality work using the new markup conditionals? Not sure it's necessarily a better option, but look into it.
       \abs-fontsize #12 {
         \strut
         \lyricist-composer-arranger
