@@ -19,24 +19,22 @@
         (reduce-right append! '() (zip a b)))
   %}
 #(begin
-  (define-markup-command (fromproperty-apply layout props symbol proc)
-        (symbol? procedure?)
-        "Identical to fromproperty, but applies the given scheme procedure to the markup prior to interpretation."
-        (let ((m (chain-assoc-get symbol props)))
-            (if (markup? m)
-                ;; prevent infinite loops by clearing the interpreted property:
-                (interpret-markup layout (cons (list (cons symbol `(,property-recursive-markup ,symbol))) props)
-                    (proc m))
-                empty-stencil)))
+  (define-markup-command (fromproperty-apply layout props symbol proc) (symbol? procedure?)
+    "Identical to fromproperty, but applies the given scheme procedure to the markup prior to interpretation."
+    (let ((m (chain-assoc-get symbol props)))
+      (if (markup? m)
+        ;; prevent infinite loops by clearing the interpreted property:
+        (interpret-markup layout (cons (list (cons symbol `(,property-recursive-markup ,symbol))) props)
+          (proc m))
+        empty-stencil)))
   
   (define (first-bar-number-visible-and-no-parenthesized-bar-numbers barnum mp)
     (= (ly:moment-main-numerator mp) 0))
   
   (define default-lyricist-composer-arranger "UNKNOWN")
 
-  (define-markup-command (lyricist-composer-arranger layout props)
-        ()
-        "
+  (define-markup-command (lyricist-composer-arranger layout props) ()
+    "
 TODO: I'm pretty sure that this relies on the user only setting these header variables as strings, not as other valid markups. This is undesirable. Refactor to allow arbitrary markup if possible.
 TODO: Is there any way to do this more efficiently using first-visible, and/or other builtin markup commands?
 
@@ -52,43 +50,52 @@ Taking 'unset' variables into account leads to redundancy in the mapping for no 
   4: All three are different (@Sections A.6, A.7.b, A.8.a)
 NOTE: Some of these cases are not explicitly covered in the manual, so I made educated guesses...
 "
-        (let* ((lyricist (string-upcase (chain-assoc-get 'header:lyricist props default-lyricist-composer-arranger)))
-               (composer (string-upcase (chain-assoc-get 'header:composer props default-lyricist-composer-arranger)))
-               (arranger (string-upcase (chain-assoc-get 'header:arranger props default-lyricist-composer-arranger)))
-               (lyco (string-ci= lyricist composer))
-               (lyar (string-ci= lyricist arranger))
-               (coar (string-ci= composer arranger)))
-            (cond
-                ((and lyco coar)
-                    (interpret-markup layout props #{ \markup \column {
-                                                        \fill-line { \null "Words, Music, and Arrangement by" }
-                                                        \fill-line { \null #lyricist }
-                                                      }
-                                                     #}))
-                (lyco
-                    (interpret-markup layout props #{ \markup {
-                                                        \fill-line { #(string-append "Words and Music by " lyricist) #(string-append "Arrangement by " arranger) }
-                                                      }
-                                                     #}))
-                (lyar
-                    (interpret-markup layout props #{ \markup {
-                                                        \fill-line { #(string-append "Music by " composer) #(string-append "Words and Arrangement by " lyricist) }
-                                                      }
-                                                     #}))
-                (coar
-                    (interpret-markup layout props #{ \markup {
-                                                        \fill-line { #(string-append "Words by " lyricist) #(string-append "Music and Arrangement by " composer) }
-                                                      }
-                                                     #}))
-                (else
-                    (interpret-markup layout props #{ \markup \column {
-                                                        \fill-line { #(string-append "Words by " lyricist) #(string-append "Music by " composer) }
-                                                        \fill-line { \null #(string-append "Arrangement by " arranger) }
-                                                      }
-                                                     #})))))
-  (define-markup-command 
-    (generate-perf-notes layout props)
-    ()
+    (let* ((lyricist (string-upcase (chain-assoc-get 'header:lyricist props default-lyricist-composer-arranger)))
+           (composer (string-upcase (chain-assoc-get 'header:composer props default-lyricist-composer-arranger)))
+           (arranger (string-upcase (chain-assoc-get 'header:arranger props default-lyricist-composer-arranger)))
+           (lyco (string-ci= lyricist composer))
+           (lyar (string-ci= lyricist arranger))
+           (coar (string-ci= composer arranger)))
+      (cond
+        ((and lyco coar)
+          (interpret-markup layout props 
+            #{ 
+              \markup \column {
+                \fill-line { \null "Words, Music, and Arrangement by" }
+                \fill-line { \null #lyricist }
+              }
+            #}))
+        (lyco
+          (interpret-markup layout props 
+            #{ 
+              \markup {
+                \fill-line { #(string-append "Words and Music by " lyricist) #(string-append "Arrangement by " arranger) }
+              }
+            #}))
+        (lyar
+          (interpret-markup layout props 
+            #{ 
+              \markup {
+                \fill-line { #(string-append "Music by " composer) #(string-append "Words and Arrangement by " lyricist) }
+              }
+            #}))
+        (coar
+          (interpret-markup layout props 
+            #{ 
+              \markup {
+                \fill-line { #(string-append "Words by " lyricist) #(string-append "Music and Arrangement by " composer) }
+              }
+            #}))
+        (else
+          (interpret-markup layout props 
+            #{ 
+              \markup \column {
+                \fill-line { #(string-append "Words by " lyricist) #(string-append "Music by " composer) }
+                \fill-line { \null #(string-append "Arrangement by " arranger) }
+              }
+            #})))))
+  
+  (define-markup-command (generate-perf-notes layout props) ()
     "TODO: Document this and why it needs to be a function and why PerformanceNotes can be null.
 TODO: Document the fact that the two baseline-skip settings refer to different skips; between paragraphs vs. lines within paragraphs; can these be set dynamically or do they have to be set explicitly to these values?"
     (let ((perfnotes (ly:parser-lookup 'PerformanceNotes)))
@@ -108,9 +115,7 @@ TODO: Document the fact that the two baseline-skip settings refer to different s
           (else
             (error (format #f "ERROR: PerformanceNotes must be defined as a markuplist; got ~a" (class-of perfnotes)))))))
   
-  (define-markup-command 
-    (generate-copyright layout props)
-    ()
+  (define-markup-command (generate-copyright layout props) ()
     "TODO: Document this and why it needs to be a function and why Copyright can be null.
 TODO: Honestly should combine functionality between this and generate-perf-notes"
     (let ((copyright (ly:parser-lookup 'Copyright)))
@@ -158,19 +163,18 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
 %% - autoAccidentals: Accidentals are remembered to the end of the measure in which they occur and only in their own octave
                                 % TODO: Technically, this implementation is incorrect, but I like it better in most cases.
 %% - autoCautionaries: After temporary accidentals, cautionary cancellation marks are printed also in the following measure (for notes in the same octave) and, in the same measure, for notes in other octaves.
-#(set! accidental-styles (append accidental-styles
-                          `(
-                            (bhs-voice-cautionary
-                             #f
-                             (Voice
-                              ,(make-accidental-rule 'same-octave 0))
-                             (Voice
-                              ,(make-accidental-rule 'any-octave 0)
-                              ,(make-accidental-rule 'same-octave 1))))))
+#(set! accidental-styles 
+  (append accidental-styles
+    `(
+      (bhs-voice-cautionary
+        #f
+        (Voice ,(make-accidental-rule 'same-octave 0))
+        (Voice ,(make-accidental-rule 'any-octave 0)
+               ,(make-accidental-rule 'same-octave 1))))))
 
 
 %% Generic Settings and Initialization: All of these default to #f
-% BHSDebug: When set to #t, enables some useful debug output. TODO: Is this currently working?
+% BHSDebug: When set to #t, enables some useful debug output.
 % TagPage: When set to #t, formats the page layout for tags; rather than having multiple pages, lays out a single auto-sized page that fits the tag.
 % ShowTempo: When set to #t, displays the tempo on the first page.
 %   Note that setting tempo to an explicit \rhythm markup will override the setting of this variable.
@@ -185,8 +189,7 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
 
   (cond
     (BHSDebug
-      (ly:set-option 'debug-skylines)
-      (ly:set-option 'debug-page-breaking-scoring)))
+      (ly:set-option 'debug-skylines)))
 )
 
 %{ Define the default directory in which to search for score specs
@@ -209,8 +212,7 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
           #{ \include #score-spec-file-path #}
           (error (format #f "ERROR: score spec not found: ~a" score-spec-file-path)))))
     (else
-      (error "ERROR: ScoreSpec must be defined as a string")))
-)
+      (error "ERROR: ScoreSpec must be defined as a string"))))
 
 %% BHS Settings
 %%% @Section A.1.a
@@ -271,16 +273,16 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
   % In the short term, disable Times New Roman if system is detected as Mac (Darwin). The default font is not great for lyrics somehow, but at least it displays characters correctly.
   #(define fonts
     (if (string-ci= (utsname:sysname (uname)) "Darwin")
-        (set-global-fonts
-          #:roman "LilyPond Serif"
-          #:sans "Arial"
-          #:factor (/ staff-height pt 20) ; unnecessary if the staff size is default
-        )
-        (set-global-fonts
-          #:roman "Times New Roman,"
-          #:sans "Arial"
-          #:factor (/ staff-height pt 20) ; unnecessary if the staff size is default
-        )))
+      (set-global-fonts
+        #:roman "LilyPond Serif"
+        #:sans "Arial"
+        #:factor (/ staff-height pt 20) ; unnecessary if the staff size is default
+      )
+      (set-global-fonts
+        #:roman "Times New Roman,"
+        #:sans "Arial"
+        #:factor (/ staff-height pt 20) ; unnecessary if the staff size is default
+      )))
   
   % Reference for the following markups: https://lilypond.org/doc/Documentation/notation/custom-titles-headers-and-footers
   bookTitleMarkup = \markup {
@@ -369,16 +371,15 @@ Layout = \layout {
              (siblings (if (ly:grob? orig)
                         (ly:spanner-broken-into orig)
                         '())))
-       (if (pair? siblings)
-        (let* ((old-inst-name-markup (ly:grob-property grob 'long-text))
-               (inst-names (map (lambda (proc) (cadr proc)) (cadr old-inst-name-markup)))
-               (inst-markups (map (lambda (name) (markup name)) inst-names))
-               (m (markup #:abs-fontsize 10 (make-left-column-markup inst-markups))))
-         (ly:grob-set-property! (car siblings) 'long-text m)
-         (for-each
-          (lambda (g)
-           (ly:grob-set-property! g 'text ""))
-          (cdr siblings))))))
+        (if (pair? siblings)
+          (let* ((old-inst-name-markup (ly:grob-property grob 'long-text))
+                 (inst-names (map (lambda (proc) (cadr proc)) (cadr old-inst-name-markup)))
+                 (inst-markups (map (lambda (name) (markup name)) inst-names))
+                 (m (markup #:abs-fontsize 10 (make-left-column-markup inst-markups))))
+            (ly:grob-set-property! (car siblings) 'long-text m)
+            (for-each
+              (lambda (g) (ly:grob-set-property! g 'text ""))
+              (cdr siblings))))))
     
 %%% @Section A.11.a
     %% Place names of sections (such as Intro, Verse, Chorus, Reprise, Interlude, or Tag) in 12-point fixed size Times New Roman Bold type, with the first letter aligned with the first note of the section. Capitalize only the first letter of the word.
@@ -418,11 +419,12 @@ Layout = \layout {
     \override BarNumber.break-visibility = #end-of-line-invisible
                                 % TODO: This relies on the assumption that the top staff will always be index 0 or 1 in the vertical axis group, and the lower staves will always be of index > 2. Thus far, this assumption has held for all test cases. However, I am uncomfortable with this assumption. Consider robustly checking it, or finding a better way to do it.
     %% NOTE: This also handles the requirement for setting the absolute font size
-    \override BarNumber.stencil = #(grob-transformer 'stencil
-                                    (lambda (grob default)
-                                     (if (member (ly:grob-get-vertical-axis-group-index grob) '(0 1))
-                                      (grob-interpret-markup grob (markup (make-abs-fontsize-markup 10 (ly:grob-property grob 'text))))
-                                      #f)))
+    \override BarNumber.stencil = 
+    #(grob-transformer 'stencil
+      (lambda (grob default)
+        (if (member (ly:grob-get-vertical-axis-group-index grob) '(0 1))
+          (grob-interpret-markup grob (markup (make-abs-fontsize-markup 10 (ly:grob-property grob 'text))))
+          #f)))
     \override BarNumber.extra-spacing-width = #'(0 . 1)
     %% NOTE: For the following to work, it requires forcibly adding a blank bar in front of the music, so that LilyPond figures out there's a bar there in the first place. This is handled elsewhere in this template.
     barNumberVisibility = #first-bar-number-visible-and-no-parenthesized-bar-numbers
@@ -470,8 +472,8 @@ BHSBarSandwich =
 #(define-music-function (music) (scheme?)
   (_i "Sandwich the given music between a blank bar line and a closing bar line")
   (if music
-   #{{#music \bar "|."}#}
-   (make-music 'SequentialMusic 'void #t)))
+    #{{#music \bar "|."}#}
+    (make-music 'SequentialMusic 'void #t)))
 
 % Uses builtin LilyPond base-tkit.ily functionality to register the prefixes defined by the score spec; hard-codes lyric postfix; no additional lyric-only verses enabled
 #(set-music-definitions!
@@ -483,9 +485,10 @@ BHSBarSandwich =
 % This is done by redefining each music definition as itself surrounded by the sandwich, at the module level.
 % This implementation is required thanks to the utilization of the builtin LilyPond vocal-tkit.ly \make-N-voice-vocal-staff functionality, which automatically retrieves music definitions based on voice names.
 % TODO: This appears to be functional, but is clunky. Are there any strange side effects? Are there other ways to do this? Maybe this is a convincing argument for not relying on the builtin functionality, or at least copying it over and modifying it.
-#(for-each (lambda (name)
-            (module-define! (current-module)
-             (string->symbol name) (BHSBarSandwich (get-id name))))
+#(for-each 
+  (lambda (name)
+    (module-define! (current-module)
+     (string->symbol name) (BHSBarSandwich (get-id name))))
   all-music-names)
 
                                 % TODO: Always having this be a chorus staff is convenient for the BHS usecase, but isn't necessarily the desired option for all cases. For example, with a solo 5th part, it might be nice for the solo line to be a member of its own staff. I think this would require a new outer-most class for score specification that defines what type of staff you want. Even better would be a version of generate-staff-definition for choir-staff-spec objects, so this line would barely change.
