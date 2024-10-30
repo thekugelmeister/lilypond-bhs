@@ -84,7 +84,7 @@ BassMusic = \relative c {
   f2. |
 }
 
-
+%% Layout lyrics
 TenorLyrics = \lyricmode {
   \skips 7 last, __ to the last __ good -- bye. __
 }
@@ -96,19 +96,16 @@ LeadLyrics = \lyricmode {
 BariLyrics = \TenorLyrics
 BassLyrics = \TenorLyrics
 
+%% Synthesis lyrics
+% TenorLyrics = \lyricmode {
+%   From the first __ hel -- lo __ to the last, __ to the last __ good -- bye. __
+% }
 
-TenorFestivalLyrics = \lyricmode {
-  From the first __ hel -- lo __ to the last, __ to the last __ good -- bye. __
-}
+% LeadLyrics = \lyricmode {
+%   From the first __ hel -- lo __ to the last __ good -- bye. __
+% }
 
-LeadFestivalLyrics = \lyricmode {
-  From the first __ hel -- lo __ to the last __ good -- bye. __
-}
-
-BariFestivalLyrics = \TenorFestivalLyrics
-BassFestivalLyrics = \TenorFestivalLyrics
+% BariLyrics = \TenorLyrics
+% BassLyrics = \TenorLyrics
 
 \include "bhs-lilypond.ily"
-
-% \include "bhs-festival.ily"
-% \BHSFestival

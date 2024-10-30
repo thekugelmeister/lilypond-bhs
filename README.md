@@ -13,11 +13,6 @@ This repository represents a set of utilities for notating, engraving, and worki
 |---------------|---------|
 | [LilyPond][3] | 2.20+   |
 
-## Optional Requirements
-| Software | Version | Purpose                                                                   |
-|----------|---------|---------------------------------------------------------------------------|
-| [Festival][5] |         | Enable automatic generation of tracks using basic singing voice synthesis |
-
 ## Usage
 The core funcitonality of this package is based off of the built-in LilyPond choral templates, as used in `satb.ly` and `ssaattbb.ly`. These templates are designed to be included at the end of an input `.ly` file, and automatically format any music that fits their specification. This drastically simplifies the process of laying out multi-part choral music. See the documentation for the [satb template][4] for more details.
 
@@ -45,15 +40,6 @@ To change to another ensemble type, such as SSAA (Tenor, Lead, Baritone, Bass), 
 Additional functionality for marking up your score in BHS-specific ways can be found in `bhs-markup.ily`. Include this file at the top of your file.
 <!-- TODO: Document available functions -->
 
-### Festival Synthesis
-If Festival is installed on your system, you can automatically generate synthetic singing tracks when compiling your file. The existing music definitions are used as-is to define the notes sung by the synthesizer. For a voice named `VoiceOne`, the lyric definitions for Festival output should be assigned to the variable `VoiceOneFestivalLyrics`. These lyrics will not affect the layout of the score. This allows for the inclusion of Festival lyrics where there are `skip`s in the lyrics for layout purposes.
-
-To generate the tracks, include the following at the bottom of your file:
-```LilyPond
-\include "bhs-festival.ily"
-\BHSFestival
-```
-
 ## Examples
 See `example_tag.ly` for a full example of the use of this package.
 <!-- TODO: embed picture? -->
@@ -67,4 +53,3 @@ See `example_tag.ly` for a full example of the use of this package.
 [2]: http://www.barbershop.org/files/documents/getandmakemusic/Barbershop%20Notation%20Manual.pdf
 [3]: http://lilypond.org
 [4]: https://lilypond.org/doc/v2.20/Documentation/learning/satb-template
-[5]: http://festvox.org/festival/
