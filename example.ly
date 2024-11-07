@@ -401,92 +401,93 @@ BassLyrics = \lyricmode {
 
 
 %% Synthesis lyrics
-TenorLyrics = \lyricmode {
-  oo __
+%% TODO: Lyrics were changed for compatibility with legacy synthesis scheme; consider updating to match new scheme
+% TenorLyrics = \lyricmode {
+%   oo __
   
-  Night was dark you could not see, moon re -- fused to shine
-  da da da da da da tree, for love they pine. __
-  Maid was 'fraid of dark -- ness, so __ she said, I guess I'll go __
-  Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe
+%   Night was dark you could not see, moon re -- fused to shine
+%   da da da da da da tree, for love they pine. __
+%   Maid was 'fraid of dark -- ness, so __ she said, I guess I'll go __
+%   Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe
 
-  Give a guy a break and shine on, shine on, har -- vest moon __ up in the sky. __
-  I ain't had no lov -- ing since A -- pril, May or June or Ju -- ly.
-  Snow time ain't no time to stay __ out -- doors and spoon.
-  So shine on, shine on har -- vest moon, __ for me and my gal. __
+%   Give a guy a break and shine on, shine on, har -- vest moon __ up in the sky. __
+%   I ain't had no lov -- ing since A -- pril, May or June or Ju -- ly.
+%   Snow time ain't no time to stay __ out -- doors and spoon.
+%   So shine on, shine on har -- vest moon, __ for me and my gal. __
 
-  Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
-  I love her, and me, oh, my, __ loo __  mid -- dle of Ju -- ly.
-  Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
-  So, shine on, oh, you har -- vest moon, __ for me and my gal. __
+%   Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
+%   I love her, and me, oh, my, __ loo __  mid -- dle of Ju -- ly.
+%   Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
+%   So, shine on, oh, you har -- vest moon, __ for me and my gal. __
 
-  Shine on, har -- vest moon. Shine ev -- 'ry night in June.
-  Shine for me and my gal!
-}
+%   Shine on, har -- vest moon. Shine ev -- 'ry night in June.
+%   Shine for me and my gal!
+% }
 
-LeadLyrics = \lyricmode {
-  oo __
+% LeadLyrics = \lyricmode {
+%   oo __
 
-  Night was dark you could not see, moon re -- fused to shine
-  da da da da da da tree, for love they pine. __
-  Lit -- tle maid was kind a -- fraid of dark -- ness, so __ she said, I guess I'll go. __
-  Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe:
+%   Night was dark you could not see, moon re -- fused to shine
+%   da da da da da da tree, for love they pine. __
+%   Lit -- tle maid was kind a -- fraid of dark -- ness, so __ she said, I guess I'll go. __
+%   Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe:
 
-  Give a guy a break and shine on, shine on, har -- vest moon __ up in the sky. __
-  I ain't had no lov -- ing since Jan -- u -- ar -- y, Feb -- ru -- ar -- y, June or Ju -- ly. __
-  Snow time ain't no time to stay __ out -- doors and spoon.
-  So shine on, shine on har -- vest moon, __ for me and my gal. __
+%   Give a guy a break and shine on, shine on, har -- vest moon __ up in the sky. __
+%   I ain't had no lov -- ing since Jan -- u -- ar -- y, Feb -- ru -- ar -- y, June or Ju -- ly. __
+%   Snow time ain't no time to stay __ out -- doors and spoon.
+%   So shine on, shine on har -- vest moon, __ for me and my gal. __
 
-  Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
-  I love her, and me, oh, my, __ we have not e -- ven kissed since the mid -- dle of Ju -- ly.
-  Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
-  So, shine on, oh, you har -- vest moon, __ for me and my gal. __
+%   Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
+%   I love her, and me, oh, my, __ we have not e -- ven kissed since the mid -- dle of Ju -- ly.
+%   Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
+%   So, shine on, oh, you har -- vest moon, __ for me and my gal. __
 
-  Shine on, har -- vest moon. ev -- 'ry night in June.
-  Shine for me and my gal!
-}
+%   Shine on, har -- vest moon. ev -- 'ry night in June.
+%   Shine for me and my gal!
+% }
 
-BariLyrics = \lyricmode {
-  oo __
+% BariLyrics = \lyricmode {
+%   oo __
   
-  Night was dark you could not see, moon re -- fused to shine
-  da da da da da da tree, for love they pine. __
-  Maid was 'fraid of dark -- ness, so __ she said, I guess I'll go __
-  Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe
+%   Night was dark you could not see, moon re -- fused to shine
+%   da da da da da da tree, for love they pine. __
+%   Maid was 'fraid of dark -- ness, so __ she said, I guess I'll go __
+%   Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe
 
-  shine on, shine on, har -- vest moon __ up in the sky. __
-  I ain't had no lov -- ing since A -- pril, May or June or Ju -- ly.
-  Snow time ain't no time to stay __ out -- doors and spoon.
-  So shine on, shine on har -- vest moon, __ for me and my gal. __
+%   shine on, shine on, har -- vest moon __ up in the sky. __
+%   I ain't had no lov -- ing since A -- pril, May or June or Ju -- ly.
+%   Snow time ain't no time to stay __ out -- doors and spoon.
+%   So shine on, shine on har -- vest moon, __ for me and my gal. __
 
-  Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
-  I love her, and me, oh, my, __ loo __ mid -- dle of Ju -- ly.
-  Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
-  So, shine on, oh, you har -- vest moon, __ for me and my gal. __
+%   Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
+%   I love her, and me, oh, my, __ loo __ mid -- dle of Ju -- ly.
+%   Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
+%   So, shine on, oh, you har -- vest moon, __ for me and my gal. __
 
-  Shine on, har -- vest moon. Shine ev -- 'ry night in June.
-  Shine for me and my gal!
-}
+%   Shine on, har -- vest moon. Shine ev -- 'ry night in June.
+%   Shine for me and my gal!
+% }
 
-BassLyrics = \lyricmode {
-  oo __
+% BassLyrics = \lyricmode {
+%   oo __
 
-  The night was migh -- ty dark so you could hard -- ly see, __ for the moon re -- fused to shine. __
-  Cou -- ple sit -- ting un -- der -- neath a wil -- low tree, __ for love __ they pine. __
-  Maid was 'fraid of dark -- ness, so __ she said, I guess I'll go __
-  Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe
+%   The night was migh -- ty dark so you could hard -- ly see, __ for the moon re -- fused to shine. __
+%   Cou -- ple sit -- ting un -- der -- neath a wil -- low tree, __ for love __ they pine. __
+%   Maid was 'fraid of dark -- ness, so __ she said, I guess I'll go __
+%   Boy be -- gan to sigh, __ looked up at the sky, __ told the moon his lit -- tle tale __ of woe
 
-  shine on, shine on, har -- vest moon __ up in the sky. __
-  I ain't had no lov -- ing since A -- pril, May or June or Ju -- ly.
-  Snow time ain't no time to stay __ out -- doors and spoon.
-  So shine on, shine on har -- vest moon, __ for me and my gal. __
+%   shine on, shine on, har -- vest moon __ up in the sky. __
+%   I ain't had no lov -- ing since A -- pril, May or June or Ju -- ly.
+%   Snow time ain't no time to stay __ out -- doors and spoon.
+%   So shine on, shine on har -- vest moon, __ for me and my gal. __
 
-  Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
-  I love her, and me, oh, my, __ loo __ mid -- dle of Ju -- ly.
-  Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
-  So, shine on, oh, you har -- vest moon, __ for me and my gal. __
+%   Oh, Mis -- ter Moon, won't you shine a lit -- tle light right down on us while we cud -- dle in the night?
+%   I love her, and me, oh, my, __ loo __ mid -- dle of Ju -- ly.
+%   Snow time, it ain't no time to spoon, __ and who wants to wait un -- til next June? __
+%   So, shine on, oh, you har -- vest moon, __ for me and my gal. __
 
-  Shine on, har -- vest moon. ev -- 'ry night in June.
-  Shine for me and my gal!
-}
+%   Shine on, har -- vest moon. ev -- 'ry night in June.
+%   Shine for me and my gal!
+% }
 
 \include "bhs-lilypond.ily"
