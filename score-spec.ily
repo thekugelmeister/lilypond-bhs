@@ -7,8 +7,8 @@ score specification. At the top of that file, include the following:
   \include "../score-spec.ily"
 
 A valid score specification carries out the following 3 operations:
-* Define the set of unique voices that are part of the score.
-* Define the set of unique staves that contain the defined voices.
+* Define the set of unique voices.
+* Assign the voices to the staves that make up the score.
 * Set the global staff list to contain the defined staves.
 
 See the default specs for examples.

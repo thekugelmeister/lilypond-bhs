@@ -1,7 +1,6 @@
 \include "../score-spec.ily"
 
-%{ voice-specs/bhs-ttbb.ily
- %}
+% Define voices
 #(begin
     (define soprano-voice (make <voice-spec> #:name "Soprano" #:clef "treble"))
     (define alto-voice (make <voice-spec> #:name "Alto" #:clef "treble"))
@@ -9,12 +8,13 @@
     (define bass-voice (make <voice-spec> #:name "Bass" #:clef "bass"))
 )
 
-%{ score-specs/bhs-ttbb.ily
- %}
+% Assign voices to staves
 #(begin
     (define soprano-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice soprano-voice))
     (define alto-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice alto-voice))
     (define tenor-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice tenor-voice))
     (define bass-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice bass-voice))
-    (set-staves! (list soprano-staff alto-staff tenor-staff bass-staff))
 )
+
+% Set the global staff list
+#(set-staves! (list soprano-staff alto-staff tenor-staff bass-staff))
