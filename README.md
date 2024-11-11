@@ -11,42 +11,66 @@ This repository represents a set of utilities for notating, engraving, and worki
 ## Requirements
 | Software      | Version |
 |---------------|---------|
-| [LilyPond][3] | 2.20+   |
+| [LilyPond][3] | 2.24+   |
 
 ## Usage
-The core funcitonality of this package is based off of the built-in LilyPond choral templates, as used in `satb.ly` and `ssaattbb.ly`. These templates are designed to be included at the end of an input `.ly` file, and automatically format any music that fits their specification. This drastically simplifies the process of laying out multi-part choral music. See the documentation for the [satb template][4] for more details.
-
-<!-- TODO: Expand on the options this brings to the table; especially Key and Time -->
 
 ### Basic Usage
 
-As with the LilyPond choral templates, music and lyrics for each part are specified as variables. For a voice named `VoiceOne`, music should be assigned to the variable `VoiceOneMusic`, and lyrics should be assigned to the variable `VoiceOneLyrics`. The available voices and their names are typically pre-defined as part of the score spec. The score spec also handles grouping the voices into staves.
+Creating a barbershop score with this package requires the following basic steps:
+* Select a pre-defined score specification that defines the desired voice parts and layout
+* Provide music and lyrics that match that score specification
+* Include the template at the bottom of the file, to automatically generate PDF and MIDI output with the correct formatting
 
-To format a score for a TTBB ensemble (Tenor, Lead, Baritone, Bass), include the following lines at the bottom of the file:
+In practice, this looks something like the following for a TTBB (Tenor, Lead, Baritone, Bass) ensemble:
 ```LilyPond
-\include "bhs-init.ily"
-\include "score-specs/bhs-ttbb.ily"
-\include "lilypond-bhs.ily"
+% Select score spec
+ScoreSpec = "bhs-ttbb"
+
+% Define music and lyrics
+TenorMusic = \relative c'' {
+    ...
+}
+
+TenorLyrics = \lyricmode {
+    ...
+}
+
+...
+
+% Include template
+\include "bhs-lilypond.ily"
 ```
+
+Music and lyrics for each part are specified as variables. For a voice named `VoiceOne`, music should be assigned to the variable `VoiceOneMusic`, and lyrics should be assigned to the variable `VoiceOneLyrics`. The available voices and their names are defined as part of the score spec, which also handles grouping the voices into staves.
 
 To change to another ensemble type, such as SSAA (Tenor, Lead, Baritone, Bass), simply swap out the score spec:
 ```LilyPond
-\include "score-specs/bhs-ssaa.ily"
+ScoreSpec = "bhs-ssaa"
 ```
 
-<!-- TODO: Document score specification -->
+All score specs should be stored in the `score-specs` directory. See that directory for details on available score specs, as well as instructions on how to make your own.
+<!-- TODO: Link to readme -->
 
 ### BHS Markup: `bhs-markup.ily`
-Additional functionality for marking up your score in BHS-specific ways can be found in `bhs-markup.ily`. Include this file at the top of your file.
+Additional functionality for marking up your score in BHS-specific ways can be found in `bhs-markup.ily`. To include these, add the following to the top of your file:
+```LilyPond
+\include "bhs-markup.ily"
+```
 <!-- TODO: Document available functions -->
 
 ## Examples
-See `example_tag.ly` for a full example of the use of this package.
+See `example_tag.ly` and `example.ly` for full examples of the use of this package.
 <!-- TODO: embed picture? -->
 <!-- TODO: If I embed a picture, I should probably move this earlier... -->
 
 ## Project History
 <!-- TODO: Fill this in to acknowledge reference inspirations and previous work -->
+
+### Core LilyPond functionality
+The core funcitonality of this package is based off of the built-in LilyPond choral templates, as used in `satb.ly` and `ssaattbb.ly`. These templates are designed to be included at the end of an input `.ly` file, and automatically format any music that fits their specification. This drastically simplifies the process of laying out multi-part choral music. See the documentation for the [satb template][4] for more details.
+
+<!-- TODO: Expand on the options this brings to the table; especially Key and Time -->
 
 ### Singing Synthesis
 One of the secondary goals of this project was to enable the automatic generation of synthesized vocal tracks, to aid in the arranging process. MIDI is great, but sometimes hearing the lyrics really makes a difference.
