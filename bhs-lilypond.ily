@@ -1,15 +1,15 @@
 %{ bhs-init.ily
  %}
-%{ Debugging methods %}
+%{ Debugging methods 
+  TODO: Turn these on conditionally, maybe using the BHSDebug flag?
+%}
 #(begin
   (define (debug-error-print msg)
     (format (current-error-port) "\n~a: ~a" (current-module) msg))
 )
-
-#(debug-error-print "bhs-init.ily: beginning; includes")
 \include "base-tkit.ly"
 
-#(debug-error-print "bhs-init.scm: defining utility methods...")
+#(debug-error-print "defining utility methods...")
 %{ 
   (first-bar-number-visible-and-no-parenthesized-bar-numbers): Bar number visibility settings for this template. Not intended to be called directly; see LilyPond documentation on bar number visibility for details. Enables display of first measure bar number and suppresses parenthesization of bar numbers for partial measures.
  %}
@@ -138,7 +138,7 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
             (error (format #f "ERROR: Copyright must be defined as a markuplist; got ~a" (class-of copyright)))))))
 )
 
-#(debug-error-print "bhs-init.ily: top section")
+#(debug-error-print "performing top level initializations...")
 % TODO: I need to find somewhere to document these
 % The following are useful functions for tweaking in scheme
 % (grob::display-objects grob)
@@ -235,7 +235,7 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
 %%% @Section B.5.c
 %% Indicate a meter change that preserves the time value of the basic beat
                                 % TODO: Time signature change spec is currently unimplemented
-#(debug-error-print "bhs-init.ily: paper section")
+#(debug-error-print "changing paper settings...")
 \paper {
   annotate-spacing = #BHSDebug
   
@@ -350,7 +350,7 @@ TODO: Honestly should combine functionality between this and generate-perf-notes
   }
 }
 
-#(debug-error-print "bhs-init.ily: layout section")
+#(debug-error-print "changing layout settings...")
 Layout = \layout {
   %%% @Section B.13.a:
   %% A caesura marks a break in the sound. The two slanted lines should go through the top space of the staff and rest on the fourth line.
@@ -455,15 +455,13 @@ Layout = \layout {
   }
 }
 
-#(debug-error-print "bhs-init.ily: end")
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \include "lilypond-bhs.ily"
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %{ lilypond-bhs.ily
   TODO: The chord display functionality could be useful in the future; should it be reenabled?
  %}
-#(debug-error-print "lilypond-bhs.ily...")
+#(debug-error-print "laying out the score...")
 \include "vocal-tkit.ly"
 
 % TODO: This is no longer a sandwich, thanks to changes to first-bar-number visibility settings. Also the name is silly. Consider changing it. Or is there some other builtin way to automatically add final bar?
