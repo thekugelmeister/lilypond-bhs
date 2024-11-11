@@ -1,7 +1,8 @@
 %{ bhs-init.ily
- %}
-%{ Debugging methods 
-  TODO: Turn these on conditionally, maybe using the BHSDebug flag?
+%}
+%{ Debugging methods
+TODO: Consider moving these to a separate file
+TODO: Turn these on conditionally, maybe using the BHSDebug flag?
 %}
 #(begin
   (define (debug-error-print msg)
@@ -10,6 +11,9 @@
 \include "base-tkit.ly"
 
 #(debug-error-print "defining utility methods...")
+%{ utility methods
+TODO: Consider moving these to a separate file
+%}
 %{ 
   (first-bar-number-visible-and-no-parenthesized-bar-numbers): Bar number visibility settings for this template. Not intended to be called directly; see LilyPond documentation on bar number visibility for details. Enables display of first measure bar number and suppresses parenthesization of bar numbers for partial measures.
  %}
@@ -455,12 +459,6 @@ Layout = \layout {
   }
 }
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% \include "lilypond-bhs.ily"
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%{ lilypond-bhs.ily
-  TODO: The chord display functionality could be useful in the future; should it be reenabled?
- %}
 #(debug-error-print "laying out the score...")
 \include "vocal-tkit.ly"
 
@@ -502,6 +500,7 @@ BHSLyStaff = << \new ChoirStaff << #(make-simultaneous-music (map generate-staff
 %   }
 % }
 
+% TODO: The chord display functionality could be useful in the future; should it be reenabled?
 \score {
   \keepWithTag #'print
   % #(if have-music
@@ -512,7 +511,6 @@ BHSLyStaff = << \new ChoirStaff << #(make-simultaneous-music (map generate-staff
        #{ { } #} )
   \layout { $(if Layout Layout) }
 }
-
 
 %% To avoid note collisions for multiple voices voices on one staff, assign the midi performer to the Voice context.
 \score {
