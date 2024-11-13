@@ -1,12 +1,10 @@
 # bhs-lilypond
-Utilities for notating and working with barbershop music in LilyPond!
+This repository represents a set of utilities for notating and engraving barbershop scores in LilyPond, such that the output meets the [Barbershop Notation Manual][2] specification. Other tools are included to augment the experience of working with or arranging barbershop music in LilyPond.
 
 ## Overview
 Creating high-quality, beautiful, easy-to-read barbershop music notation can be a difficult task. The [Barbershop Harmony Society][1] provides a [set of notation guidelines][2], intended to ensure uniformity and clarity across all barbershop arrangements. In practice, following these guidelines using modern music engraving software can be a tedious and drawn-out process requiring manual tweaking.
 
-[LilyPond][3] is a free music engraving program designed to automate the process of laying out music. It has all of the necessary functionality to take an arrangement and automatically engrave it as a high-quality, beautiful, and easy-to-read document. Furthermore, its highly-extensible design allows for the addition of new functionality and configuration for specific use cases.
-
-This repository represents a set of utilities for notating, engraving, and working with barbershop arrangements in LilyPond. The core functionality revolves around the notation and engraving of barbershop music, such that the output meets the [Barbershop Notation Manual][2] specification. Other tools are included to augment the experience of working with or arranging barbershop music in LilyPond.
+[LilyPond][3] is a free music engraving program designed to automate the process of laying out music. It has all of the necessary functionality to take a score and engrave it as a high-quality, beautiful, and easy-to-read document. Furthermore, its highly-extensible design allows for the addition of new functionality and configuration for specific use cases.
 
 ## Requirements
 | Software      | Version |
