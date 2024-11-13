@@ -15,6 +15,8 @@ Creating high-quality, beautiful, easy-to-read barbershop music notation can be 
 
 ### Basic Usage
 
+After cloning this repository, to begin creating a score, create a `.ly` file in the top level `bhs-lilypond` directory.
+
 Creating a barbershop score with this package requires the following basic steps:
 * Select a pre-defined score specification that defines the desired voice parts and layout
 * Provide music and lyrics that match that score specification
@@ -48,6 +50,12 @@ ScoreSpec = "bhs-ssaa"
 ```
 
 All score specs should be stored in the `score-specs` directory. See the [README in that directory](score-specs/README.md) for details on available score specs, as well as instructions on how to make your own.
+
+After your score is put together, simply compile the score with LilyPond:
+```bash
+$ lilypond FILE_NAME.ly
+```
+This will generate both `FILE_NAME.pdf` and `FILE_NAME.midi`.
 
 ### BHS Markup: `bhs-markup.ily`
 Additional functionality for marking up your score in BHS-specific ways can be found in `bhs-markup.ily`. To include these, add the following to the top of your file:
