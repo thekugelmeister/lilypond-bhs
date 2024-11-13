@@ -49,8 +49,7 @@ To change to another ensemble type, such as SSAA (Tenor, Lead, Baritone, Bass), 
 ScoreSpec = "bhs-ssaa"
 ```
 
-All score specs should be stored in the `score-specs` directory. See that directory for details on available score specs, as well as instructions on how to make your own.
-<!-- TODO: Link to readme -->
+All score specs should be stored in the `score-specs` directory. See the [README in that directory](score-specs/README.md) for details on available score specs, as well as instructions on how to make your own.
 
 ### BHS Markup: `bhs-markup.ily`
 Additional functionality for marking up your score in BHS-specific ways can be found in `bhs-markup.ily`. To include these, add the following to the top of your file:
