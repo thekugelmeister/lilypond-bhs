@@ -65,7 +65,9 @@ See `example_tag.ly` and `example.ly` for full examples of the use of this packa
 <!-- TODO: If I embed a picture, I should probably move this earlier... -->
 
 ## Project History
-<!-- TODO: Fill this in to acknowledge reference inspirations and previous work -->
+
+### Credits and inspiration
+This project originated as a fork of [tahongawaka/LilyPond-BHS-Template][8]. This repository was an invaluable inspiration and reference for learning how to format LilyPond vocal scores. Over time, as my understanding of the language improved, I began to replace components of the template to better match the notation guidelines and make score building easier. Once I became familiar with the built-in LilyPond choral template system, I decided to implement my own system completely from scratch.
 
 ### Core LilyPond functionality
 The core funcitonality of this package is based off of the built-in LilyPond choral templates, as used in `satb.ly` and `ssaattbb.ly`. These templates are designed to be included at the end of an input `.ly` file, and automatically format any music that fits their specification. This drastically simplifies the process of laying out multi-part choral music. See the documentation for the [satb template][4] for more details.
@@ -101,3 +103,4 @@ There are many high-quality nerual network-based singing synthesizers coming out
 [5]: https://www.cstr.ed.ac.uk/projects/festival/
 [6]: https://lilypond.org/doc/v2.25/Documentation/changes/miscellaneous-improvements
 [7]: https://www.openutau.com/
+[8]: https://github.com/tahongawaka/LilyPond-BHS-Template
