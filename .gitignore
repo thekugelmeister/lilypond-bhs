@@ -8,6 +8,7 @@
 *.ly
 # Adding .txt files to enable requirements.txt; can make more specific later
 # *.txt
+.python-version
 
 .DS_Store
 
