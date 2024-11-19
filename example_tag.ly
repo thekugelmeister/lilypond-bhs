@@ -1,4 +1,4 @@
-\version "2.20"
+\version "2.24"
 \include "bhs-markup.ily"
 
 \header {
@@ -9,10 +9,6 @@
   composer = "Johnny Burke"
   lyricist = "Johnny Burke"
   arranger = "Lou Perry"
-  performancenotes = \markuplist {
-    \wordwrap-string "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.  Donec hendrerit tempor tellus.  Donec pretium posuere tellus.  Proin quam nisl, tincidunt et, mattis eget, convallis nec, purus.  Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  Nulla posuere.  Donec vitae dolor.  Nullam tristique diam non turpis.  Cras placerat accumsan nulla.  Nullam rutrum.  Nam vestibulum accumsan nisl."
-    \contestSuitability
-  }
 }
 
 Key = {
@@ -24,7 +20,12 @@ Time = {
   \tempo 4=80
 }
 
+ScoreSpec = "bhs-ttbb"
 TagPage = ##t
+PerformanceNotes = \markuplist {
+  \wordwrap-string "Lorem ipsum dolor sit amet, consectetuer adipiscing elit.  Donec hendrerit tempor tellus.  Donec pretium posuere tellus.  Proin quam nisl, tincidunt et, mattis eget, convallis nec, purus.  Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  Nulla posuere.  Donec vitae dolor.  Nullam tristique diam non turpis.  Cras placerat accumsan nulla.  Nullam rutrum.  Nam vestibulum accumsan nisl."
+  \contestSuitability
+}
 
 
 TenorMusic = \relative c' {
@@ -83,7 +84,7 @@ BassMusic = \relative c {
   f2. |
 }
 
-
+%% Layout lyrics
 TenorLyrics = \lyricmode {
   \skips 7 last, __ to the last __ good -- bye. __
 }
@@ -95,21 +96,16 @@ LeadLyrics = \lyricmode {
 BariLyrics = \TenorLyrics
 BassLyrics = \TenorLyrics
 
+%% Synthesis lyrics
+% TenorLyrics = \lyricmode {
+%   From the first __ hel -- lo __ to the last, __ to the last __ good -- bye. __
+% }
 
-TenorFestivalLyrics = \lyricmode {
-  From the first __ hel -- lo __ to the last, __ to the last __ good -- bye. __
-}
+% LeadLyrics = \lyricmode {
+%   From the first __ hel -- lo __ to the last __ good -- bye. __
+% }
 
-LeadFestivalLyrics = \lyricmode {
-  From the first __ hel -- lo __ to the last __ good -- bye. __
-}
+% BariLyrics = \TenorLyrics
+% BassLyrics = \TenorLyrics
 
-BariFestivalLyrics = \TenorFestivalLyrics
-BassFestivalLyrics = \TenorFestivalLyrics
-
-\include "bhs-init.ily"
-\include "score-specs/bhs-ttbb.ily"
-\include "lilypond-bhs.ily"
-
-% \include "bhs-festival.ily"
-% \BHSFestival
+\include "bhs-lilypond.ily"

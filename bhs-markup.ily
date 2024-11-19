@@ -18,48 +18,72 @@ You should have received a copy of the GNU General Public License
 along with LilyPond Barbershop Template.  If not, see <http://www.gnu.org/licenses/>.
 %}
 
+%{ bhs-markup.ily
+Methods for modifying music / lyric definitions during the notation process, in BHS-specific manners.
+All of these methods can be used independently from the rest of the template.
+
+To use, simply add the following line to the top of the .ly file:
+  \include "bhs-markup.ily"
+%}
+
+%{ contestSuitability
+Standard boilerplate text included at the end of the Performance Notes for nearly all BHS-released sheet music.
+
+Example usage:
+  PerformanceNotes = \markuplist {
+    \wordwrap-string "Lorem ipsum"
+    \contestSuitability
+  }
+%}
 contestSuitability = \markup {
   \wordwrap {
     As a final note: Questions about the contest suitability of this song/arrangement should be directed to the judging community and measured against current contest rules. Ask \italic before you sing.
   }
 }
 
-                                % TODO: Write wrappers for the swing articulation that only affects midi output (even better: also affects festival output).
+%{ voiceCross
+Add a voice crossing mark to a note.
 
-%%% @Section B.14.a
-%% If the lower voice on a staff crosses over the top voice on the same staff, place a lower-case x in 10-point fixed size Arial type, above the staff where the first note of the chord occurs.
-%% voiceCross: Add a voice crossing mark to a note.
+@Section B.14.a
+If the lower voice on a staff crosses over the top voice on the same staff, place a lower-case x in 10-point fixed size Arial type, above the staff where the first note of the chord occurs.
+
+Example usage:
+  LeadMusic = \relative c' {
+    f1\voiceCross |
+  }
+%}
 voiceCross=#(define-event-function () ()
              #{
-             ^\markup { \abs-fontsize #10 { \override #'(font-name . "Arial") x } }
+             ^\markup { \abs-fontsize #10 { \sans x } }
              #}
            )
 
-%% voiceCrosses: Mark the given set notes as crossed.
-                                % TODO: Does this even work right now? If it does, start using it! If it doesn't, either fix it or remove it.
+
+%{ voiceCrosses
+Mark the given set notes as crossed.
+TODO: Does this even work right now? If it does, start using it! If it doesn't, either fix it or remove it.
+TODO: Can this operate in a similar fashion to the \spoken markup?
+%}
+%{
 voiceCrosses =
 #(define-music-function
   (parser location music)
   (ly:music?)
   (map-some-music voiceCross music)
 )
+%}
 
+%{ optionalNotes
+Given a chord, makes the first note normal size and the remaining notes a smaller size.
 
-%% newSection: Demarcate new section with a double bar line and a label
-                                % TODO: Document manual reference and missing functionality.
-newSection =
-#(define-music-function
-  (parser location text)
-  (markup?)
-  #{
-  \bar "||" \mark \markup { \abs-fontsize #12 { \override #'(font-name . "Times Bold") #text } }
-  #}
-)
+@Section B.16
+Indicate an optional note by using a 70%-sized note head.
 
-%% http://lsr.di.unimi.it/LSR/Item?id=538
-%% optionalNotes: Given a chord, makes the first note normal size and the remaining notes a smaller size.
-                                % TODO: Document manual reference.
-                                % TODO: Refactor; not sure if this works, or how it was supposed to work in the first place...
+Reference: http://lsr.di.unimi.it/LSR/Item?id=538
+
+TODO: Refactor; not sure if this works, or how it was supposed to work in the first place...
+%}
+%{
 optionalNotes =
 #(define-music-function (parser location x) (ly:music?)
   (music-map (lambda (x)
@@ -73,14 +97,23 @@ optionalNotes =
                   (set! elements (cdr elements))))
                 copy) x))
    x))
+%}
 
-%% skips: Insert a given number of lyric skips
+%{ skips
+Insert a given number of lyric skips, making it easier and more concise to add lyrics to harmony parts
+
+Reference: http://lilypond.1069038.n5.nabble.com/Add-lyrics-after-n-measures-td165881.html
+
+Example usage:
+  TenorLyrics = \lyricmode {
+    \skips 7 last, __ to the last __ good -- bye. __
+  }
+%}
 skips =
 #(define-music-function
   (parser location nskips)
   (integer?)
-  "From http://lilypond.1069038.n5.nabble.com/Add-lyrics-after-n-measures-td165881.html.
-Insert a given number of lyric skips, accounting appropriately for terminating lyric extenders."
+  "Insert a given number of lyric skips, accounting appropriately for terminating lyric extenders."
   (if (= nskips 1)
    #{ 
   \lyricmode {
@@ -95,11 +128,28 @@ Insert a given number of lyric skips, accounting appropriately for terminating l
    #}
  ))
 
-                                % TODO: I need a better solution for this. First of all, the fact that it's completely manual makes it difficult to use. It should somehow be able to determine placement automatically. Second, these take up no actualy space, as far as I can tell? So they get kind of clobbered by other grobs.
-%% adapted from http://lsr.di.unimi.it/LSR/Snippet?id=961
-%% melodyTransfer: Indicate a melody transfer between voices.
-%% Usage: -\markup { \melodyTransfer #angle #length #xoffset yoffset }
-%%% @Section B.10
+%{ melodyTransfer
+Indicate a melody transfer between voices.
+
+@Section B.10.a
+Indicate when the melody is transferred from the lead to another part, or vice versa, by placing a dashed line from the last melody note in that part to the first melody note in the other part.
+
+Arguments:
+  angle: angle at which to draw the line (in degrees)
+  length: length of the line (in unknown units)
+  xoffset: horizontal displacement of the line start (in unknown units)
+  yoffset: vertical displacement of the line start (in unknown units)
+
+Reference: adapted from http://lsr.di.unimi.it/LSR/Snippet?id=961
+
+TODO: I need a better solution for this. First of all, the fact that it's completely manual makes it difficult to use. It should somehow be able to determine placement automatically. Second, these take up no actual space, as far as I can tell? So they get kind of clobbered by other grobs.
+
+Example usage:
+  TenorMusic = \relative c' {
+    f2-\markup { \melodyTransfer #70 #8 #2.5 #-1 } g2 |
+  }
+  
+%}
 #(define-markup-command (melodyTransfer layout props angle length xoffset yoffset) 
   (number? number? number? number?)
   (interpret-markup layout props
@@ -115,21 +165,18 @@ Insert a given number of lyric skips, accounting appropriately for terminating l
    #}))
 
 
-%%% @Section B.13.a:
-%% A caesura marks a break in the sound. The two slanted lines should go through the top space of the staff and rest on the fourth line.
-                                % TODO: This currently breaks festival output. Not sure why.
-caesura =
-#(define-music-function
-  (parser location)
-  ()
-  #{
-  \once \override BreathingSign.text = \markup { \musicglyph #"scripts.caesura.straight" }
-  \breathe
-  #}
-)
+%{ spoken
+Changes note heads to denote spoken words (also can be used for clapping or other percussive parts).
 
+@Section B.2.b
+To indicate a speaking part, use an x-head note. 
 
-clapping =
+Example usage:
+  LeadMusic = \relative c' {
+    f4 f4 \spoken { e8 e8 e4 } |
+  }
+%}
+spoken =
 #(define-music-function
   (parser location music)
   (ly:music?)
