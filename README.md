@@ -90,6 +90,8 @@ The core funcitonality of this package is based off of the built-in LilyPond cho
 
 ## LilyPond TODO items
 List of relevant LilyPond updates that might simplify / modify / otherwise affect functionality added in this package.
+* From https://lilypond.org/doc/v2.25/Documentation/changes/text-and-font-improvements
+  * Changes coming to font specification that may break current logic; may also improve some functionality
 
 ### General notes
 
