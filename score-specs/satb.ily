@@ -11,9 +11,9 @@
 % Assign voices to staves
 #(begin
     (define soprano-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice soprano-voice))
-    (define alto-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice alto-voice))
-    (define tenor-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice tenor-voice))
-    (define bass-staff (make <one-voice-staff-spec> #:name "Soprano" #:voice bass-voice))
+    (define alto-staff (make <one-voice-staff-spec> #:name "Alto" #:voice alto-voice))
+    (define tenor-staff (make <one-voice-staff-spec> #:name "Tenor" #:voice tenor-voice))
+    (define bass-staff (make <one-voice-staff-spec> #:name "Bass" #:voice bass-voice))
 )
 
 % Set the global staff list
