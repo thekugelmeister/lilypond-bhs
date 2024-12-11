@@ -17,3 +17,6 @@
 
 # List .wav later, to prevent example .wav files from being added
 *.wav
+
+# Ignore custom score specs
+score-specs/*.ily
